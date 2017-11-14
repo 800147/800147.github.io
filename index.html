@@ -1,0 +1,199 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <title>pocker example</title>
+      
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+
+    <style>
+      body, root {
+        margin: 0;
+        padding: 0;
+        background-color: #000;
+        text-align: center;
+        overflow: hidden;
+        font-family: monospace;
+      }
+      .card {
+        background-color: #333;
+        border-radius: calc(1vw * var(--size) / 10);
+        --size: 20;
+        position: absolute;
+        top: calc(var(--row) * (20vh + 4vw) + (100vh - (4 * (20vh + 4vw) - 4vw)) / 2);
+        left: calc(var(--col) * (20vw + 4vw) + 4vw);
+        width: calc(var(--size) * 1vw);
+        height: calc(var(--size) * 1vh);
+        opacity: 1;
+        transition: all 1s;
+        transform: perspective(500px) translate3d(0, 0, 0);
+      }
+      [data-state='1'] .card[data-phase='0'] {
+        opacity: 0;
+      }
+      .card[data-phase='0'] {
+        z-index: 0;
+      }
+      .card[data-phase='1'] {
+        z-index: 1000;
+        top: 10vh;
+        left: 10vw;
+        --size: 80;
+        transform: perspective(500px) rotateY(180deg);
+      }
+      .card[data-phase='2'] {
+        z-index: 1000;
+        top: 10vh;
+        left: 10vw;
+        --size: 80;
+        transform: perspective(500px) rotateY(0deg);
+      }
+      .card__decoration {
+        position: absolute;
+        --delay: calc(1vw * var(--size) / 20);
+        width: auto;
+        height: auto;
+        top: var(--delay);
+        right: var(--delay);
+        bottom: var(--delay);
+        left: var(--delay);
+        border-style: solid;
+        border-radius: calc(1vw * var(--size) / 15);
+        border-width: calc(1vw * var(--size) / 100);
+        border-color: #fff;
+        transition: all 1s, visibility 0s linear 0.3s;
+        visibility: hidden;
+      }
+      .card[data-phase='1'] > .card__decoration {
+        visibility: visible;
+      }
+      .card__label {
+        position: absolute;
+        width: 100%;
+        text-align: center;
+        --font-size: calc(var(--size) * 1vw / 3);
+        font-size: var(--font-size);
+        line-height: 1;
+        margin-top: calc(var(--size) * 1vh / 2 - var(--font-size) / 2);
+        color: #FFF;
+        transition: all 1s, visibility 0s linear 0.3s;
+        visibility: visible;
+      }
+      .card[data-phase='1'] > .card__label {
+        visibility: hidden;
+      }
+    </style>
+
+    <script>
+      "use strict";
+
+
+      class El {
+        constructor(tagName, attrs, ...children) {
+          this.domElement = document.createElement(tagName);
+          if (attrs != null) {
+            this.setAttributes(attrs);
+          }
+          this.appendChildren(...children);
+        }
+        setAttributes(attrs) {
+          Object.keys(attrs).forEach(name => this.domElement.setAttribute(name, attrs[name]));
+          return this;
+        }
+        appendChildren(...els) {
+          els.forEach(el => {
+            if (typeof(el) === "string") {
+              this.domElement.appendChild(document.createTextNode(el));
+              return;
+            }
+            if (el.domElement.parentNode != null) {
+              el.domElement.parentNode.removeChildren(el.domElement);
+            }
+            if (!el.domElement.hasAttribute("data-id")) {
+              this.domElement.appendChild(el.domElement);
+              return;
+            }
+            const elId = el.domElement.getAttribute("data-id");
+            //TODO: check for keywords
+            if (typeof(this[elId]) !== "undefined") {
+              this.domElement.replaceChild(el.domElement, this[elId].domElement);
+            } else {
+              this.domElement.appendChild(el.domElement);
+            }
+            this[elId] = el;
+          });
+          return this;
+        }
+        removeChildren(...els) {
+          els.forEach(el => {
+            if (el.domElement.parentNode !== this.domElement) {
+              return;
+            }
+            this.domElement.removeChild(el.domElement);
+            if (!el.domElement.hasAttribute("data-id")) {
+              return;
+            }
+            delete this[el.domElement.getAttribute("data-id")];
+          });
+          return this;
+        }
+        removeAllChildren() {
+          while (this.domElement.firstChild) {
+            if (this.domElement.firstChild.hasAttribute("data-id")) {
+              delete this[this.domElement.firstChild.getAttribute("data-id")];
+            }
+            this.domElement.removeChild(this.domElement.firstChild);
+          }
+          return this;
+        }
+      }
+      const __ = (tagName, attrs, ...children) => new El(tagName, attrs, ...children);
+
+
+
+      const root = __("div", { "class": "root", "data-state": 0 });
+      document.addEventListener("DOMContentLoaded", () => document.body.appendChild(root.domElement), false);
+
+      const __card = (label, row, col) => {
+        const el =
+        __("div",
+          {
+            "class": ("card" + (label == "" ? " card_empty": "")),
+            "data-phase": 0,
+            "style": "--row: " + row + "; --col: " + col + ";"
+          },
+          __("div", {"class": "card__decoration"}),
+          __("div", {"class": "card__label"},
+            label
+          )
+        )
+        el.domElement.onclick = element => {
+          let newPhase = Number(el.domElement.dataset.phase) + 1;
+          root.domElement.dataset.state = 1;
+          if (newPhase > 2) {
+            root.domElement.dataset.state = 0;
+            newPhase = 0;
+          }
+          el.domElement.dataset.phase = newPhase;
+        }
+        return el;
+      };
+      root.appendChildren(
+        __card("0",   0, 0),
+        __card("1/2", 0, 1),
+        __card("1",   0, 2),
+        __card("2",   0, 3),
+        __card("3",   1, 0),
+        __card("5",   1, 1),
+        __card("8",   1, 2),
+        __card("13",  1, 3),
+        __card("20",  2, 0),
+        __card("40",  2, 1),
+        __card("100", 2, 2),
+        __card("?",   2, 3),
+        __card("\u2615",   3, 1.5)
+      );
+    </script>
+  </head>
+  <body></body>
+</html>
