@@ -1,6 +1,6 @@
 {
-  "short_name": "W2D",
-  "name": "Words To Discuss",
+  "short_name": "Scrum Poker",
+  "name": "Scrum Poker",
   "icons": [
     {
       "src": "img/icon.png",
@@ -8,8 +8,9 @@
       "sizes": "192x192"
     }
   ],
-  "start_url": "index.html?launcher=true",
-  "background_color": "#FFFFFF",
+  "start_url": "https://800147.github.io/scrumpoker/index.html",
+  "background_color": "#000000",
   "display": "standalone",
-  "theme_color": "#FFFFFF"  
+  "orientation": "portrait",
+  "theme_color": "#000000"
 }
