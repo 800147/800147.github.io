@@ -5,7 +5,7 @@
     {
       "src": "resources/icon.svg",
       "sizes": "any",
-      "type": "images/svg"
+      "type": "image/svg+xml"
     }
   ],
   "start_url": "https://800147.github.io/scrumpoker/index.html",
