@@ -3,9 +3,9 @@
   "name": "Scrum Poker",  
   "icons": [
     {
-      "src": "resources/icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml"
+      "src": "resources/icon.png",
+      "type": "image/png",
+      "sizes": "any"
     }
   ],
   "start_url": "https://800147.github.io/scrumpoker/index.html",
