@@ -3,7 +3,7 @@
   "name": "Scrum Poker",  
   "icons": [
     {
-      "src": "resources/icon.svg",
+      "src": "https://800147.github.io/scrumpoker/resources/icon.svg",
       "sizes": "any"
     }
   ],
