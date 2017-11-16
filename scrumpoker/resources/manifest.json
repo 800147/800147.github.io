@@ -2,7 +2,7 @@
   "short_name": "Scrum Poker",
   "name": "Scrum Poker",  
   "start_url": "https://800147.github.io/scrumpoker/index.html",
-  "display": "fullscreen",
+  "display": "standalone",
   "orientation": "portrait-primary",
   "theme_color": "black",
   "background_color": "black",
