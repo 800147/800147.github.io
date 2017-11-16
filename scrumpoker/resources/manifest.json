@@ -5,12 +5,12 @@
   "display": "fullscreen",
   "orientation": "portrait-primary",
   "theme_color": "black",
-  "background_color": "black"
+  "background_color": "black",
   "icons": [
     {
       "src": "icon.png",
       "type": "image/png",
       "sizes": "any"
     }
-  ],
+  ]
 }
