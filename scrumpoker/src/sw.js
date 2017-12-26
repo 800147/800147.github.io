@@ -1,12 +1,11 @@
 "use strict";
 
-var CACHE_NAME = 'version_01';
-var URLS = [               // Add URL you want to cache in this list.
-  '/',                     // If you have separate JS/CSS files,
-  '/index.html',            // add path to those files here
-  '/resources/icon.png',
-  '/resources/icon.svg',
-  '/resources/manifest.json'
+var CACHE_NAME = "version_01";
+var URLS = [
+  "/index.html",
+  "/resources/icon.png",
+  "/resources/icon.svg",
+  "/resources/manifest.json"
 ];
 
 self.addEventListener('install', event => 
