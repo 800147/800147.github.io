@@ -4,8 +4,7 @@ var CACHE_NAME = "version_01";
 var URLS = [
   "/index.html",
   "/resources/icon.png",
-  "/resources/icon.svg",
-  "/resources/manifest.json"
+  "/resources/icon.svg"
 ];
 
 self.addEventListener('install', event => 
