@@ -8,14 +8,14 @@
 
     <style type="text/css">
 :root { /* vars for modification */
-  --max-width: 800px;
-  --indent: 8px;
-  --font-size: 16px;
-  --line-height: 19.2px;
-  --padding-v: 6px;
-  --padding-h: 16px;
-  --border-width: 1px;
-  --border-radius: 4px;
+  --max-width: 600pt;
+  --indent: 6pt;
+  --font-size: 12pt;
+  --line-height: 12.4pt;
+  --padding-v: 5pt;
+  --padding-h: 12pt;
+  --border-width: 1pt;
+  --border-radius: 3pt;
   --count-input-chars: 3;
   --background-color: #FFFFFF;
   --color: #222222;
@@ -30,7 +30,7 @@
 }
 :root { /* calculated */
   --half-indent: calc(var(--indent) / 2);
-  --count-input-width: calc(var(--count-input-chars) * 1ch + 16px); /* 16px - number input arrows width */
+  --count-input-width: calc(var(--count-input-chars) * 1ch + 12pt); /* 12pt - number input arrows width */
   --input-height: calc(var(--line-height) + (var(--padding-v) + var(--border-width)) * 2);
 }
 body {
@@ -104,7 +104,7 @@ body {
   padding: var(--padding-v) var(--padding-h);
   border: var(--border-width) solid var(--border-color);
   border-radius: var(--border-radius);
-  min-width: 100px;
+  min-width: 100pt;
 }
 .line-input::-moz-placeholder {
   color: var(--placeholder-color);
@@ -130,7 +130,7 @@ body {
   padding: var(--padding-v) var(--padding-h);
   border: var(--border-width) solid var(--border-color);
   border-radius: var(--border-radius);
-  min-width: 100px;
+  min-width: 100pt;
   resize: vertical;
 }
 .multiline-input::-moz-placeholder {
@@ -168,7 +168,7 @@ body {
     var(--background-color) 50%, var(--background-color) 75%,
     var(--panel-color) 75%, var(--panel-color) 100%
   );
-  background-size: 32px 32px;
+  background-size: 16pt 16pt;
 }
 .row__flex {
   display: flex;
