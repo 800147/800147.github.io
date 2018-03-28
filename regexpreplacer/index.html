@@ -414,7 +414,7 @@ if (rows.length < 1) {
 
 const rowsViews = [];
 for (i = 0; i < rows.length; i++) {
-  rowsViews.push(__ruleRow(String(i), rows[i].find, rows[i].replace, rows[i].registerSensitive, rows[i].multiline, rows[i].firstOnly));
+  rowsViews.push(__ruleRow(String(i), rows[i].find, rows[i].replace, rows[i].registerSensitive, rows[i].multiline, rows[i].firstOnly, rows[i].loop));
 }
 
 
