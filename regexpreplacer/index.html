@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>RegExp Replacer</title>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+
+    <style type="text/css">
+:root { /* vars for modification */
+  --max-width: 800px;
+  --indent: 8px;
+  --font-size: 16px;
+  --line-height: 19.2px;
+  --padding-v: 6px;
+  --padding-h: 16px;
+  --border-width: 1px;
+  --border-radius: 4px;
+  --count-input-chars: 3;
+  --background-color: #FFFFFF;
+  --color: #222222;
+  --button-color: #555555;
+  --odd-background-color: #E8E8E8;
+  --button-background-color: #DDDDDD;
+  --active-button-background-color: #B0B0B0;
+  --border-color: #AAAAAA;
+  --error-color: #B00000;
+  --placeholder-color: #AAAAAA;
+  --font-family: monospace;
+}
+:root { /* calculated */
+  --half-indent: calc(var(--indent) / 2);
+  --count-input-width: calc(var(--count-input-chars) * 1ch + 16px); /* 16px - number input arrows width */
+  --input-height: calc(var(--line-height) + (var(--padding-v) + var(--border-width)) * 2);
+}
+body {
+  background-color: var(--background-color);
+  margin: 0;
+}
+* {
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  line-height: var(--line-height);
+  color: var(--color);
+}
+
+
+
+
+
+.checkbox-button {
+  display: inline-block;
+}
+.checkbox-button__checkbox {
+  display: none;
+  position: absolute;
+  opacity: 0;
+}
+.checkbox-button__label {
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  line-height: var(--line-height);
+  color: var(--color);
+  
+  display: block;
+  -webkit-user-select: none;  /* Chrome all / Safari all */
+  -moz-user-select: none;     /* Firefox all */
+  -ms-user-select: none;      /* IE 10+ */
+  user-select: none;
+  color: var(--button-color);
+  font-weight: bold;
+  box-sizing: border-box;
+  height: var(--input-height);
+  border: var(--border-width) dashed var(--border-color);
+  border-radius: var(--border-radius);
+  text-align: center;
+  padding: var(--padding-v) var(--padding-h);
+  background-color: var(--background-color);
+}
+.checkbox-button_short > .checkbox-button__label {
+  padding: var(--padding-v) 0;
+  width: var(--input-height);
+}
+.checkbox-button__checkbox:checked + .checkbox-button__label {
+  color: var(--color);
+  border: var(--border-width) solid var(--color);
+  background-color: var(--button-background-color);
+}
+
+
+
+
+
+.line-input {
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  line-height: var(--line-height);
+  color: var(--color);
+  
+  display: inline-block;
+  box-sizing: border-box;
+  height: var(--input-height);
+  color: var(--color);
+  padding: var(--padding-v) var(--padding-h);
+  border: var(--border-width) solid var(--border-color);
+  border-radius: var(--border-radius);
+  min-width: 100px;
+}
+.line-input::-moz-placeholder {
+  color: var(--placeholder-color);
+  opacity: 1;
+}
+.line-input::-webkit-input-placeholder {
+  color: var(--placeholder-color);
+  opacity: 1;
+}
+
+
+
+.multiline-input {
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  line-height: var(--line-height);
+  color: var(--color);
+  
+  display: inline-block;
+  box-sizing: border-box;
+  min-height: var(--input-height);
+  color: var(--color);
+  padding: var(--padding-v) var(--padding-h);
+  border: var(--border-width) solid var(--border-color);
+  border-radius: var(--border-radius);
+  min-width: 100px;
+  resize: vertical;
+}
+.multiline-input::-moz-placeholder {
+  color: var(--placeholder-color);
+  opacity: 1;
+}
+.multiline-input::-webkit-input-placeholder {
+  color: var(--placeholder-color);
+  opacity: 1;
+}
+
+
+
+
+.flex-grow_1 {
+  flex-grow: 1;
+}
+
+.row {
+  padding: var(--half-indent);
+}
+.row__result {
+  padding: calc(var(--half-indent) + var(--border-width) + var(--padding-v))  calc(var(--half-indent) + var(--border-width) + var(--padding-h));
+  margin: 0;
+}
+.row:nth-child(even) {
+  background-color: var(--odd-background-color);
+}
+.row_panel {
+  --panel-color: var(--odd-background-color);
+  background: 
+  linear-gradient(-45deg,
+    var(--background-color) 0%, var(--background-color) 25%,
+    var(--panel-color) 25%, var(--panel-color) 50%,
+    var(--background-color) 50%, var(--background-color) 75%,
+    var(--panel-color) 75%, var(--panel-color) 100%
+  );
+  background-size: 32px 32px;
+}
+.row__flex {
+  display: flex;
+  flex-wrap: wrap-reverse;
+  flex-direction: row-reverse;
+  width: auto;
+  align-self: baseline;
+  max-width: var(--max-width);
+}
+.row__flex_menu {
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  flex-direction: row;
+}
+.row__flex > * {
+  align-self: baseline;
+  margin: var(--half-indent);
+}
+
+
+
+
+.button, .submit {
+  display: inline-block;
+  height: var(--input-height);
+  box-sizing: border-box;
+  color: var(--button-color);
+  font-weight: bold;
+  padding: var(--padding-v) var(--padding-h);
+  border: var(--border-width) solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: var(--button-background-color);
+  white-space: nowrap;
+}
+.button_short, .submit_short {
+  text-align: center;
+  width: var(--input-height);
+  border: var(--border-width) solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: var(--button-background-color);
+  white-space: nowrap;
+  padding: var(--padding-v) 0;
+}
+.button:active, .submit:active {
+  color: var(--color);
+  background-color: var(--active-button-background-color);
+}
+
+
+
+
+.result, .error {
+  width: auto;
+  padding: calc(var(--padding-v) + var(--border-width) + var(--indent) / 2) calc(var(--padding-h) + var(--border-width) + var(--indent));
+  margin: 0;
+  white-space: pre-wrap;
+}
+    </style>
+    <script type="text/javascript">
+"use strict";
+
+//urlParams
+const getUrlParams = () => {
+  const params = Object.create(null);
+  if (window.location.search == "") return params;
+  window.location.search.substr(1).split('&').forEach(param => {
+    let p = param.split('=', 2);
+    params[p[0]] = p.length == 1? "": decodeURIComponent(p[1].replace(/\+/g, " "));
+  });
+  return params;
+};
+
+//custom elements
+Element.prototype.usedIn = function(func) {
+  func(this);
+  return this;
+};
+const appendChildren = (element, ...children) =>
+children.forEach(child =>
+  element.appendChild(typeof(child) === "string"? document.createTextNode(child): child)
+);
+const __ = (tagName, attrs = null, ...children) => {
+  const element = document.createElement(tagName);
+  if (attrs != null) {
+    Object.keys(attrs).forEach(name => element.setAttribute(name, attrs[name]));
+  }
+  appendChildren(element, ...children);
+  return element;
+};
+
+//start
+const __checkboxButton = ({
+  short = false, 
+  name = "",
+  form = "",
+  specialId = null,
+  checked = false
+}, ...content) =>
+__("div", { "class": "checkbox-button" + (short? " checkbox-button_short": "") },
+  __("input", { "type": "checkbox", "class": "checkbox-button__checkbox", "id": (specialId != null? specialId: (form + "_" + name)), "name": name, "form": form }).usedIn(el => { if (checked) el.checked = true; }),
+  __("label", { "class": "checkbox-button__label", "for": (specialId != null? specialId: (form + "_" + name)) }, ...content)
+);
+const __lineInput = ({
+  name = "",
+  form = "",
+  value = "",
+  placeholder = ""
+}) =>
+__("input", { "class": "line-input", "type": "text", "name": name, "value": value, "placeholder": placeholder, "form": form });
+
+const __multilineInput = ({
+  name = "",
+  form = "",
+  placeholder = "",
+  rows = 3
+}, ...content) =>
+__("textarea", { "rows": rows, "class": "multiline-input", "name": name, "placeholder": placeholder, "form": form }, ...content);
+
+const __button = ({
+  short = false
+}, ...content) =>
+__("button", { "class": "button" + (short? " button_short": "") }, ...content);
+
+const __submit = ({
+  short = false,
+  name = "",
+  form = "",
+  value = "",
+  specialId = ""
+}) =>
+__("input", { "type": "submit", "class": "submit" + (short? " submit_short": ""), "name": name, "value": value, "form": form, "id": (specialId != null? specialId: (form + "_" + name)) });
+
+const __ruleRow = (n, find = "", replace = "", registerSensitive = false, multiline = false, firstOnly = false) =>
+__("div", { "class": "row" },
+  __("div", { "class": "row__flex" },
+    __submit({ "short": true, "value": "╳", "form": "form-0", "name": "remove-" + n }),
+    __submit({ "short": true, "value": "˅", "form": "form-0", "name": "down-" + n }),
+    __submit({ "short": true, "value": "˄", "form": "form-0", "name": "up-" + n }),
+    __checkboxButton({ "name": "o" + n, "form": "form-0", "short": true, "checked": firstOnly }, "=1"),
+    __checkboxButton({ "name": "m" + n, "form": "form-0", "short": true, "checked": multiline }, "^$"),
+    __checkboxButton({ "name": "s" + n, "form": "form-0", "short": true, "checked": registerSensitive }, "aA"),
+    __lineInput({ "name": "r" + n, "placeholder": "write replace RegExp here", "form": "form-0", "value": replace }).usedIn(el => el.classList.add("flex-grow_1")),
+    __lineInput({ "name": "f" + n, "placeholder": "write find RegExp here", "form": "form-0", "value": find }).usedIn(el => el.classList.add("flex-grow_1"))
+  )
+);
+const params = getUrlParams();
+if (typeof params.base === "undefined") {
+  params.base = "";
+}
+const rows = [];
+let i = 0;
+let action;
+let actionRow;
+while (typeof params["f" + String(i)] !== "undefined") {
+  rows[i] = Object.create(null);
+  rows[i].find = params["f" + String(i)];
+  rows[i].replace = params["r" + String(i)];
+  rows[i].registerSensitive = params["s" + String(i)] === "on";
+  rows[i].multiline = params["m" + String(i)] === "on";
+  rows[i].firstOnly = params["o" + String(i)] === "on";
+  if (typeof params["remove-" + String(i)] !== "undefined") {
+    action = "remove";
+    actionRow = i;
+  }
+  if (typeof params["up-" + String(i)] !== "undefined") {
+    action = "up";
+    actionRow = i;
+  }
+  if (typeof params["down-" + String(i)] !== "undefined") {
+    action = "down";
+    actionRow = i;
+  }
+  i++;
+}
+if (typeof params["new"] !== "undefined") {
+  action = "new";
+}
+if (typeof params["replace"] !== "undefined") {
+  action = "replace";
+}
+const result = [];
+const copyToClipboardButton = [];
+
+switch (action) {
+  case "new":
+    rows.push(Object.create(null));
+    break;
+  case "remove":
+    rows.splice(actionRow, 1);
+    break;
+  case "up":
+    if (actionRow > 0) {
+      [rows[actionRow], rows[actionRow - 1]] = [rows[actionRow - 1], rows[actionRow]];
+    }
+    break;
+  case "down":
+    if (actionRow < rows.length - 1) {
+      [rows[actionRow], rows[actionRow + 1]] = [rows[actionRow + 1], rows[actionRow]];
+    }
+    break;
+  case "replace":
+    let copyButton;
+    let resultElement;
+    let resultString = String(params.base);
+    for (let i = 0; i < rows.length; i++) {
+      let rpls = rows[i].replace;
+      rpls = rpls.replace(/\\t/, "\t");
+      rpls = rpls.replace(/\\v/, "\v");
+      rpls = rpls.replace(/\\f/, "\f");
+      rpls = rpls.replace(/\\r/, "\r");
+      rpls = rpls.replace(/\\n/, "\n");
+      rpls = rpls.replace(/\\0/, "\0");
+      resultString = resultString.replace(new RegExp(rows[i].find, (rows[i].registerSensitive? "": "i") + (rows[i].multiline? "m": "") + (rows[i].firstOnly? "": "g")), rpls);
+    }
+    result.push(
+      __("div", { "class": "row" },
+        __("pre", { "class": "row__result" },
+          resultString
+        ).usedIn(el => resultElement = el)
+      )
+    );
+    copyToClipboardButton.push(
+      __button({}, "copy to clipboard").usedIn(el => copyButton = el)
+    );
+    copyButton.onclick = () => {
+      document.getSelection().selectAllChildren(resultElement);
+      document.execCommand("Copy");
+      document.getSelection().empty();
+    };
+    break;
+}
+
+if (rows.length < 1) {
+  rows.push(Object.create(null));
+}
+
+const rowsViews = [];
+for (i = 0; i < rows.length; i++) {
+  rowsViews.push(__ruleRow(String(i), rows[i].find, rows[i].replace, rows[i].registerSensitive, rows[i].multiline, rows[i].firstOnly));
+}
+
+
+
+const body = __("body", null,
+/*
+  __submit({ "short": false, "value": "hello world", "form": "form-0", "name": "x" }),
+  __submit({ "short": true, "value": "╳", "form": "form-0", "name": "x" }),
+  __button({ "short": false }, "add new", " replace"),
+  __button({ "short": true }, "╳"),
+  __lineInput({"name": "replace", "placeholder": "write replace RegExp here", "form": "form-0"}),
+  __checkboxButton({ "name": "multiline1", "form": "form-0", "short": true }, "^&"),
+*/
+  __("form", { "class": "form", "action": "", "method": "get", "id": "form-0" }),
+  __("div", {},
+    __("div", { "class": "row" },
+      __("div", { "class": "row__flex row__flex_menu" },
+        __multilineInput({ "rows": 5, "name": "base", "form": "form-0", "placeholder": "write base text here" }, params.base).usedIn(el => el.classList.add("flex-grow_1"))
+      )
+    ),
+    ...rowsViews
+  ),
+  __("div", { "class": "row row_panel" },
+    __("div", { "class": "row__flex row__flex_menu" },
+      __submit({ "name": "replace", "value": "replace", "form": "form-0"}),
+      ...copyToClipboardButton,
+      __("div", { "class": "flex-grow_1" }),
+      __submit({ "name": "new", "value": "add new rule", "form": "form-0"})
+    )
+  ),
+  __("div", {},
+    ...result
+  )
+);
+document.addEventListener("DOMContentLoaded", () => document.documentElement.replaceChild(body, document.body), false);
+    </script>
+  </head>
+  <body></body>
+</html>
