@@ -301,12 +301,13 @@ const __submit = ({
 }) =>
 __("input", { "type": "submit", "class": "submit" + (short? " submit_short": ""), "name": name, "value": value, "form": form, "id": (specialId != null? specialId: (form + "_" + name)) });
 
-const __ruleRow = (n, find = "", replace = "", registerSensitive = false, multiline = false, firstOnly = false) =>
+const __ruleRow = (n, find = "", replace = "", registerSensitive = false, multiline = false, firstOnly = false, loop = false) =>
 __("div", { "class": "row" },
   __("div", { "class": "row__flex" },
     __submit({ "short": true, "value": "╳", "form": "form-0", "name": "remove-" + n }),
     __submit({ "short": true, "value": "˅", "form": "form-0", "name": "down-" + n }),
     __submit({ "short": true, "value": "˄", "form": "form-0", "name": "up-" + n }),
+    __checkboxButton({ "name": "l" + n, "form": "form-0", "short": true, "checked": loop }, "↻"),
     __checkboxButton({ "name": "o" + n, "form": "form-0", "short": true, "checked": firstOnly }, "=1"),
     __checkboxButton({ "name": "m" + n, "form": "form-0", "short": true, "checked": multiline }, "^$"),
     __checkboxButton({ "name": "s" + n, "form": "form-0", "short": true, "checked": registerSensitive }, "aA"),
@@ -329,6 +330,7 @@ while (typeof params["f" + String(i)] !== "undefined") {
   rows[i].registerSensitive = params["s" + String(i)] === "on";
   rows[i].multiline = params["m" + String(i)] === "on";
   rows[i].firstOnly = params["o" + String(i)] === "on";
+  rows[i].loop = params["l" + String(i)] === "on";
   if (typeof params["remove-" + String(i)] !== "undefined") {
     action = "remove";
     actionRow = i;
@@ -374,14 +376,19 @@ switch (action) {
     let resultElement;
     let resultString = String(params.base);
     for (let i = 0; i < rows.length; i++) {
-      let rpls = rows[i].replace;
-      rpls = rpls.replace(/\\t/, "\t");
-      rpls = rpls.replace(/\\v/, "\v");
-      rpls = rpls.replace(/\\f/, "\f");
-      rpls = rpls.replace(/\\r/, "\r");
-      rpls = rpls.replace(/\\n/, "\n");
-      rpls = rpls.replace(/\\0/, "\0");
-      resultString = resultString.replace(new RegExp(rows[i].find, (rows[i].registerSensitive? "": "i") + (rows[i].multiline? "m": "") + (rows[i].firstOnly? "": "g")), rpls);
+      let loop = true;
+      while(loop) {
+        let rpls = rows[i].replace;
+        rpls = rpls.replace(/\\t/, "\t");
+        rpls = rpls.replace(/\\v/, "\v");
+        rpls = rpls.replace(/\\f/, "\f");
+        rpls = rpls.replace(/\\r/, "\r");
+        rpls = rpls.replace(/\\n/, "\n");
+        rpls = rpls.replace(/\\0/, "\0");
+        let resultString1 = resultString.replace(new RegExp(rows[i].find, (rows[i].registerSensitive? "": "i") + (rows[i].multiline? "m": "") + (rows[i].firstOnly? "": "g")), rpls);
+        loop = (rows[i].loop && resultString1 != resultString);
+        resultString = resultString1;
+      }
     }
     result.push(
       __("div", { "class": "row" },
