@@ -45,7 +45,7 @@ body {
   color: var(--color);
 }
 :focus {
-  outline: var(--border-width) dashed black;
+  outline: var(--border-width) dashed var(--color);
   outline-offset: calc(var(--half-indent) / 2);
   -moz-outline-radius: calc(var(--border-radius) + var(--half-indent) / 2);
 }
@@ -91,7 +91,7 @@ body {
   background-color: var(--button-background-color);
 }
 .checkbox-button__checkbox:focus + .checkbox-button__label {
-  outline: var(--border-width) dashed black;
+  outline: var(--border-width) dashed var(--color);
   outline-offset: calc(var(--half-indent) / 2);
   -moz-outline-radius: calc(var(--border-radius) + var(--half-indent) / 2);
 }
