@@ -1,21 +1,21 @@
 <!DOCTYPE html>
-<html>
-  <head>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <title>RegExp Replacer</title>
 
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 
     <style type="text/css">
 :root { /* vars for modification */
   --max-width: 600pt;
   --indent: 6pt;
   --font-size: 12pt;
-  --line-height: 12.4pt;
+  --line-height: 14pt;
   --padding-v: 5pt;
   --padding-h: 12pt;
-  --border-width: 1pt;
-  --border-radius: 3pt;
+  --border-width: 1.2pt;
+  --border-radius: 5pt;
   --count-input-chars: 3;
   --background-color: #FFFFFF;
   --color: #222222;
@@ -30,8 +30,8 @@
 }
 :root { /* calculated */
   --half-indent: calc(var(--indent) / 2);
-  --count-input-width: calc(var(--count-input-chars) * 1ch + 12pt); /* 12pt - number input arrows width */
   --input-height: calc(var(--line-height) + (var(--padding-v) + var(--border-width)) * 2);
+  --count-input-width: calc(var(--count-input-chars) * 1ch + 12pt); /* 12pt - number input arrows width */
 }
 body {
   background-color: var(--background-color);
@@ -43,8 +43,6 @@ body {
   line-height: var(--line-height);
   color: var(--color);
 }
-
-
 
 
 
@@ -86,8 +84,6 @@ body {
   border: var(--border-width) solid var(--color);
   background-color: var(--button-background-color);
 }
-
-
 
 
 
@@ -144,7 +140,6 @@ body {
 
 
 
-
 .flex-grow_1 {
   flex-grow: 1;
 }
@@ -190,7 +185,6 @@ body {
 
 
 
-
 .button, .submit {
   display: inline-block;
   height: var(--input-height);
@@ -219,7 +213,6 @@ body {
 
 
 
-
 .result, .error {
   width: auto;
   padding: calc(var(--padding-v) + var(--border-width) + var(--indent) / 2) calc(var(--padding-h) + var(--border-width) + var(--indent));
@@ -234,8 +227,8 @@ body {
 const getUrlParams = () => {
   const params = Object.create(null);
   if (window.location.search == "") return params;
-  window.location.search.substr(1).split('&').forEach(param => {
-    let p = param.split('=', 2);
+  window.location.search.substr(1).split("&").forEach(param => {
+    let p = param.split("=", 2);
     params[p[0]] = p.length == 1? "": decodeURIComponent(p[1].replace(/\+/g, " "));
   });
   return params;
@@ -271,6 +264,7 @@ __("div", { "class": "checkbox-button" + (short? " checkbox-button_short": "") }
   __("input", { "type": "checkbox", "class": "checkbox-button__checkbox", "id": (specialId != null? specialId: (form + "_" + name)), "name": name, "form": form }).usedIn(el => { if (checked) el.checked = true; }),
   __("label", { "class": "checkbox-button__label", "for": (specialId != null? specialId: (form + "_" + name)) }, ...content)
 );
+
 const __lineInput = ({
   name = "",
   form = "",
@@ -315,6 +309,9 @@ __("div", { "class": "row" },
     __lineInput({ "name": "f" + n, "placeholder": "write find RegExp here", "form": "form-0", "value": find }).usedIn(el => el.classList.add("flex-grow_1"))
   )
 );
+
+
+
 const params = getUrlParams();
 if (typeof params.base === "undefined") {
   params.base = "";
@@ -417,17 +414,7 @@ for (i = 0; i < rows.length; i++) {
   rowsViews.push(__ruleRow(String(i), rows[i].find, rows[i].replace, rows[i].registerSensitive, rows[i].multiline, rows[i].firstOnly, rows[i].loop));
 }
 
-
-
 const body = __("body", null,
-/*
-  __submit({ "short": false, "value": "hello world", "form": "form-0", "name": "x" }),
-  __submit({ "short": true, "value": "╳", "form": "form-0", "name": "x" }),
-  __button({ "short": false }, "add new", " replace"),
-  __button({ "short": true }, "╳"),
-  __lineInput({"name": "replace", "placeholder": "write replace RegExp here", "form": "form-0"}),
-  __checkboxButton({ "name": "multiline1", "form": "form-0", "short": true }, "^&"),
-*/
   __("form", { "class": "form", "action": "", "method": "get", "id": "form-0" }),
   __("div", {},
     __("div", { "class": "row" },
