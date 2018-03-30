@@ -15,7 +15,7 @@
   --line-height: 14pt;
   --padding-v: 5pt;
   --padding-h: 12pt;
-  --border-width: 1.2pt;
+  --border-width: 1pt;
   --border-radius: 5pt;
   --count-input-chars: 3;
   --background-color: #FFFFFF;
@@ -44,14 +44,19 @@ body {
   line-height: var(--line-height);
   color: var(--color);
 }
-
-
+:focus {
+  outline: var(--border-width) dashed black;
+  outline-offset: calc(var(--half-indent) / 2);
+  -moz-outline-radius: calc(var(--border-radius) + var(--half-indent) / 2);
+}
+::-moz-focus-inner {
+  border: 0;
+}
 
 .checkbox-button {
   display: inline-block;
 }
 .checkbox-button__checkbox {
-  display: none;
   position: absolute;
   opacity: 0;
 }
@@ -84,6 +89,11 @@ body {
   color: var(--color);
   border: var(--border-width) solid var(--color);
   background-color: var(--button-background-color);
+}
+.checkbox-button__checkbox:focus + .checkbox-button__label {
+  outline: var(--border-width) dashed black;
+  outline-offset: calc(var(--half-indent) / 2);
+  -moz-outline-radius: calc(var(--border-radius) + var(--half-indent) / 2);
 }
 
 
@@ -141,10 +151,6 @@ body {
 
 
 
-.flex-grow_1 {
-  flex-grow: 1;
-}
-
 .row {
   padding: var(--half-indent);
 }
@@ -168,20 +174,39 @@ body {
 }
 .row__flex {
   display: flex;
-  flex-wrap: wrap-reverse;
-  flex-direction: row-reverse;
+  flex-direction: row;
+  flex-wrap: wrap;
   width: auto;
   align-self: baseline;
   max-width: var(--max-width);
 }
+.row__flex > .row__subflex {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: auto;
+  align-self: baseline;
+  margin: 0;
+}
 .row__flex_menu {
-  justify-content: flex-end;
   flex-wrap: wrap;
   flex-direction: row;
 }
-.row__flex > * {
+.row__flex > *, .row__subflex > * {
   align-self: baseline;
   margin: var(--half-indent);
+}
+
+
+
+.justify-content_flex-end {
+  justify-content: flex-end;
+}
+.justify-content_flex-start {
+  justify-content: flex-start;
+}
+.flex-grow_1 {
+  flex-grow: 1;
 }
 
 
@@ -257,6 +282,7 @@ const __ = (tagName, attrs = null, ...children) => {
 const __checkboxButton = ({
   short = false, 
   name = "",
+  title = null,
   form = "",
   specialId = null,
   checked = false
@@ -264,6 +290,7 @@ const __checkboxButton = ({
 __("div", { "class": "checkbox-button" + (short? " checkbox-button_short": "") },
   __("input", { "type": "checkbox", "class": "checkbox-button__checkbox", "id": (specialId != null? specialId: (form + "_" + name)), "name": name, "form": form }).usedIn(el => { if (checked) el.checked = true; }),
   __("label", { "class": "checkbox-button__label", "for": (specialId != null? specialId: (form + "_" + name)) }, ...content)
+    .usedIn(el => { if (title != null) el.title = title; })
 );
 
 const __lineInput = ({
@@ -290,24 +317,28 @@ __("button", { "class": "button" + (short? " button_short": "") }, ...content);
 const __submit = ({
   short = false,
   name = "",
+  title = null,
   form = "",
   value = "",
   specialId = ""
 }) =>
-__("input", { "type": "submit", "class": "submit" + (short? " submit_short": ""), "name": name, "value": value, "form": form, "id": (specialId != null? specialId: (form + "_" + name)) });
+__("input", { "type": "submit", "class": "submit" + (short? " submit_short": ""), "name": name, "value": value, "form": form, "id": (specialId != null? specialId: (form + "_" + name)) })
+  .usedIn(el => { if (title != null) el.title = title; });
 
 const __ruleRow = (n, find = "", replace = "", registerSensitive = false, multiline = false, firstOnly = false, loop = false) =>
 __("div", { "class": "row" },
-  __("div", { "class": "row__flex" },
-    __submit({ "short": true, "value": "╳", "form": "form-0", "name": "remove-" + n }),
-    __submit({ "short": true, "value": "˅", "form": "form-0", "name": "down-" + n }),
-    __submit({ "short": true, "value": "˄", "form": "form-0", "name": "up-" + n }),
-    __checkboxButton({ "name": "l" + n, "form": "form-0", "short": true, "checked": loop }, "↻"),
-    __checkboxButton({ "name": "o" + n, "form": "form-0", "short": true, "checked": firstOnly }, "=1"),
-    __checkboxButton({ "name": "m" + n, "form": "form-0", "short": true, "checked": multiline }, "^$"),
-    __checkboxButton({ "name": "s" + n, "form": "form-0", "short": true, "checked": registerSensitive }, "aA"),
+  __("div", { "class": "row__flex justify-content_flex-end" },
+    __lineInput({ "name": "f" + n, "placeholder": "write find RegExp here", "form": "form-0", "value": find }).usedIn(el => el.classList.add("flex-grow_1")),
     __lineInput({ "name": "r" + n, "placeholder": "write replace RegExp here", "form": "form-0", "value": replace }).usedIn(el => el.classList.add("flex-grow_1")),
-    __lineInput({ "name": "f" + n, "placeholder": "write find RegExp here", "form": "form-0", "value": find }).usedIn(el => el.classList.add("flex-grow_1"))
+    __("div", { "class": "row__subflex justify-content_flex-end" },
+      __checkboxButton({ "name": "s" + n, "title":"register-sensitive", "form": "form-0", "short": true, "checked": registerSensitive }, "aA"),
+      __checkboxButton({ "name": "m" + n, "title":"multilene search", "form": "form-0", "short": true, "checked": multiline }, "^$"),
+      __checkboxButton({ "name": "o" + n, "title":"first only", "form": "form-0", "short": true, "checked": firstOnly }, "=1"),
+      __checkboxButton({ "name": "l" + n, "title":"looped", "form": "form-0", "short": true, "checked": loop }, "↻"),
+      __submit({ "short": true, "value": "˄", "title":"move up", "form": "form-0", "name": "up-" + n }),
+      __submit({ "short": true, "value": "˅", "title":"move down", "form": "form-0", "name": "down-" + n }),
+      __submit({ "short": true, "value": "╳", "title":"remove rule", "form": "form-0", "name": "remove-" + n })
+    )
   )
 );
 
@@ -419,17 +450,18 @@ const body = __("body", null,
   __("form", { "class": "form", "action": "", "method": "get", "id": "form-0" }),
   __("div", {},
     __("div", { "class": "row" },
-      __("div", { "class": "row__flex row__flex_menu" },
+      __("div", { "class": "row__flex row__flex_menu justify-content_flex-end" },
         __multilineInput({ "rows": 5, "name": "base", "form": "form-0", "placeholder": "write base text here" }, params.base).usedIn(el => el.classList.add("flex-grow_1"))
       )
     ),
     ...rowsViews
   ),
   __("div", { "class": "row row_panel" },
-    __("div", { "class": "row__flex row__flex_menu" },
-      __submit({ "name": "replace", "value": "replace", "form": "form-0"}),
-      ...copyToClipboardButton,
-      __("div", { "class": "flex-grow_1" }),
+    __("div", { "class": "row__flex row__flex_menu justify-content_flex-end" },
+      __("div", { "class": "row__subflex justify-content_flex-start flex-grow_1" },
+        __submit({ "name": "replace", "value": "replace", "form": "form-0"}),
+        ...copyToClipboardButton
+      ),
       __submit({ "name": "new", "value": "add new rule", "form": "form-0"})
     )
   ),
