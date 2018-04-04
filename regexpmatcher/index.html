@@ -222,6 +222,10 @@ body {
   border-radius: var(--border-radius);
   background-color: var(--button-background-color);
   white-space: nowrap;
+  -webkit-user-select: none;  /* Chrome all / Safari all */
+  -moz-user-select: none;     /* Firefox all */
+  -ms-user-select: none;      /* IE 10+ */
+  user-select: none;
 }
 .button_short, .submit_short {
   text-align: center;
@@ -430,7 +434,8 @@ const __ = (tagName, attrs = null, ...children) => {
 //start
 const addClickAndPressEvent = el => {
   let n = 0;
-  let preventNextClick = false;
+  let preventMouse = false;
+  let preventClick = false;
   const dispatch = () => {
     const event = new Event("click-and-press");
     el.dispatchEvent(event);
@@ -445,7 +450,6 @@ const addClickAndPressEvent = el => {
   let interval = null;
   const set = () => {
     clear();
-    preventNextClick = true;
     dispatch();
     n = 10;
     interval = setInterval(tick, 50)
@@ -456,18 +460,29 @@ const addClickAndPressEvent = el => {
       interval = null;
     }
   };
-  
-  el.addEventListener("mousedown", e => set());
-  el.addEventListener("mouseup", e => clear());
-  el.addEventListener("mouseleave", e => clear());
-
-  el.addEventListener("touchstart", e => set());
+  el.addEventListener("touchstart", e => {
+    preventClick = true;
+    preventMouse = true;
+    set();
+  });
   el.addEventListener("touchend", e => clear());
   el.addEventListener("touchcancel", e => clear());
 
+  el.addEventListener("mousedown", e => {
+    if (!preventMouse) {
+      preventClick = true;
+      set();
+    }
+    preventMouse = false;
+  });
+  el.addEventListener("mouseup", e => clear());
+  el.addEventListener("mouseleave", e => clear());
+
   el.addEventListener("click", e => {
-    if (interval == null && !preventNextClick) dispatch();
-    preventNextClick = false;
+    if (!preventClick) {
+      dispatch();
+    }
+    preventClick = false;
   });
 };
 
