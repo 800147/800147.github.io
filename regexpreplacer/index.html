@@ -594,7 +594,11 @@ switch (action) {
       )
     );
     copyToClipboardButton.push(
-      __button({}, "copy to clipboard").usedIn(el => copyButton = el)
+      __("div", { "class": "row row_panel" },
+        __("div", { "class": "row__flex row__flex_menu justify-content_flex-end" },
+          __button({}, "copy to clipboard").usedIn(el => copyButton = el)
+        )
+      )
     );
     copyButton.onclick = () => {
       document.getSelection().selectAllChildren(resultElement);
@@ -626,15 +630,15 @@ const body = __("body", null,
   __("div", { "class": "row row_panel" },
     __("div", { "class": "row__flex row__flex_menu justify-content_flex-end" },
       __("div", { "class": "row__subflex justify-content_flex-start flex-grow_1" },
-        __submit({ "name": "replace", "value": "replace", "form": "form-0"}),
-        ...copyToClipboardButton
+        __submit({ "name": "replace", "value": "replace", "form": "form-0"})
       ),
       __submit({ "name": "new", "value": "add new rule", "form": "form-0"})
     )
   ),
-  __("div", {},
+  __("div", { "id": "result" },
     ...result
-  )
+  ),
+  ...copyToClipboardButton
 );
 document.addEventListener("DOMContentLoaded", () => document.documentElement.replaceChild(body, document.body), false);
     </script>
