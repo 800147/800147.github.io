@@ -222,6 +222,10 @@ body {
   border-radius: var(--border-radius);
   background-color: var(--button-background-color);
   white-space: nowrap;
+  -webkit-user-select: none;  /* Chrome all / Safari all */
+  -moz-user-select: none;     /* Firefox all */
+  -ms-user-select: none;      /* IE 10+ */
+  user-select: none;
 }
 .button_short, .submit_short {
   text-align: center;
@@ -244,6 +248,126 @@ body {
   padding: calc(var(--padding-v) + var(--border-width) + var(--indent) / 2) calc(var(--padding-h) + var(--border-width) + var(--indent));
   margin: 0;
   white-space: pre-wrap;
+}
+
+
+
+
+.number-input {
+  display: flex;
+  flex-direction: row;
+  height: var(--input-height);
+  width: 100pt;
+}
+.number-input__pre-text {
+  display: none;
+}
+.number-input_with-pretext > .number-input__pre-text {
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  line-height: var(--line-height);
+  color: var(--color);
+  background-color: var(--background-color);
+  
+  display: inline-block;
+  box-sizing: border-box;
+  height: var(--input-height);
+  color: var(--color);
+  padding: var(--padding-v) 0 var(--padding-v) var(--padding-h);
+  border: var(--border-width) solid var(--border-color);
+  border-right: none;
+  border-radius: var(--border-radius);
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.number-input__input {
+  height: var(--input-height);
+  min-width: 10pt;
+  border-right: none;
+  flex-grow: 1;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  -moz-outline-radius-topright: calc(var(--half-indent) / 2);
+  -moz-outline-radius-bottomright: calc(var(--half-indent) / 2);
+  -moz-appearance: textfield;
+}
+
+.number-input__input::-webkit-outer-spin-button,
+.number-input__input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.number-input_with-pretext > .number-input__input {
+  padding-left: 0;
+  border-left: none;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  -moz-outline-radius-topleft: calc(var(--half-indent) / 2);
+  -moz-outline-radius-bottomleft: calc(var(--half-indent) / 2);
+}
+.number-input_with-posttext > .number-input__input {
+  padding-right: 0;
+  border-right: none;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  -moz-outline-radius-topright: calc(var(--half-indent) / 2);
+  -moz-outline-radius-bottomright: calc(var(--half-indent) / 2);
+}
+.number-input__post-text {
+  display: none;
+}
+.number-input_with-posttext > .number-input__post-text {
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  line-height: var(--line-height);
+  color: var(--color);
+  background-color: var(--background-color);
+  
+  display: inline-block;
+  box-sizing: border-box;
+  height: var(--input-height);
+  color: var(--color);
+  padding: var(--padding-v) var(--padding-h) var(--padding-v) 0;
+  border: var(--border-width) solid var(--border-color);
+  border-radius: var(--border-radius);
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-left: none;
+
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: none;
+}
+.number-input__plus,
+.number-input__minus {
+  font-size: calc(var(--font-size) / 3 * 2);
+  padding: 0;
+  width: calc(var(--input-height) / 2);
+  height: 1pt;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+.number-input__buttons {
+  display: flex;
+  flex-direction: column;
+}
+.number-input__plus {
+  margin-bottom: calc(var(--border-width) * -1);
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  -moz-outline-radius-topleft: calc(var(--half-indent) / 2);
+  -moz-outline-radius-bottomleft: calc(var(--half-indent) / 2);
+  -moz-outline-radius-bottomright: calc(var(--half-indent) / 2);
+}
+.number-input__minus {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 0;
+  -moz-outline-radius-topleft: calc(var(--half-indent) / 2);
+  -moz-outline-radius-topright: calc(var(--half-indent) / 2);
+  -moz-outline-radius-bottomleft: calc(var(--half-indent) / 2);
 }
     </style>
     <script type="text/javascript">
@@ -323,7 +447,50 @@ const __submit = ({
   specialId = ""
 }) =>
 __("input", { "type": "submit", "class": "submit" + (short? " submit_short": ""), "name": name, "value": value, "form": form, "id": (specialId != null? specialId: (form + "_" + name)) })
-  .usedIn(el => { if (title != null) el.title = title; });
+  .usedIn(el => { if (title != null) el.title = title; })
+;
+
+const __numberInput = ({
+  name = "",
+  title = null,
+  form = "",
+  preText = null,
+  integer = false,
+  postText = null,
+  value = "",
+  min = null,
+  max = null
+}) => {
+  let input;
+  const change = n => {
+    let value = Number(input.value) + n;
+    if (min != null && value < min) value = min;
+    if (max != null && value > max) value = max;
+    if (integer) value = Math.round(value);
+    input.value = value;
+  };
+  return __("div", { "class": "number-input" }, 
+    __("div", { "class": "number-input__pre-text" }, String(preText)), 
+    __lineInput({ "value": value, "form": form, "name": name })
+      .usedIn(el => el.type = "number")
+      .usedIn(el => { if (min != null) el.min = min; })
+      .usedIn(el => { if (max != null) el.max = max; })
+      .usedIn(el => { if (integer) el.step = 1; else el.step = "any"; })
+      .usedIn(el => input = el)
+      .usedIn(el => el.classList.add("number-input__input"))
+      .usedIn(el => el.addEventListener("change", e => change(0))),
+    __("div", { "class": "number-input__post-text" }, String(postText)),
+    __("div", { "class": "number-input__buttons" }, 
+      __button({}, "+").usedIn(el => el.classList.add("number-input__plus"))
+        .usedIn(el => el.addEventListener("click", e => change(1))),
+      __button({}, "-").usedIn(el => el.classList.add("number-input__minus"))
+        .usedIn(el => el.addEventListener("click", e => change(-1)))
+    )
+  )
+    .usedIn(el => { if (preText != null) el.classList.add("number-input_with-pretext"); })
+    .usedIn(el => { if (postText != null) el.classList.add("number-input_with-posttext"); });
+};
+
 
 const __ruleRow = (n, find = "", replace = "", registerSensitive = false, multiline = false, firstOnly = false, loop = false) =>
 __("div", { "class": "row" },
@@ -331,13 +498,13 @@ __("div", { "class": "row" },
     __lineInput({ "name": "f" + n, "placeholder": "write find RegExp here", "form": "form-0", "value": find }).usedIn(el => el.classList.add("flex-grow_1")),
     __lineInput({ "name": "r" + n, "placeholder": "write replace RegExp here", "form": "form-0", "value": replace }).usedIn(el => el.classList.add("flex-grow_1")),
     __("div", { "class": "row__subflex justify-content_flex-end" },
-      __checkboxButton({ "name": "s" + n, "title":"register-sensitive", "form": "form-0", "short": true, "checked": registerSensitive }, "aA"),
-      __checkboxButton({ "name": "m" + n, "title":"multilene search", "form": "form-0", "short": true, "checked": multiline }, "^$"),
-      __checkboxButton({ "name": "o" + n, "title":"first only", "form": "form-0", "short": true, "checked": firstOnly }, "=1"),
-      __checkboxButton({ "name": "l" + n, "title":"looped", "form": "form-0", "short": true, "checked": loop }, "↻"),
-      __submit({ "short": true, "value": "˄", "title":"move up", "form": "form-0", "name": "up-" + n }),
-      __submit({ "short": true, "value": "˅", "title":"move down", "form": "form-0", "name": "down-" + n }),
-      __submit({ "short": true, "value": "╳", "title":"remove rule", "form": "form-0", "name": "remove-" + n })
+      __checkboxButton({ "name": "s" + n, "title": "register-sensitive", "form": "form-0", "short": true, "checked": registerSensitive }, "aA"),
+      __checkboxButton({ "name": "m" + n, "title": "multilene search", "form": "form-0", "short": true, "checked": multiline }, "^$"),
+      __checkboxButton({ "name": "o" + n, "title": "first only", "form": "form-0", "short": true, "checked": firstOnly }, "=1"),
+      __checkboxButton({ "name": "l" + n, "title": "looped", "form": "form-0", "short": true, "checked": loop }, "↻"),
+      __submit({ "short": true, "value": "˄", "title": "move up", "form": "form-0", "name": "up-" + n }),
+      __submit({ "short": true, "value": "˅", "title": "move down", "form": "form-0", "name": "down-" + n }),
+      __submit({ "short": true, "value": "╳", "title": "remove rule", "form": "form-0", "name": "remove-" + n })
     )
   )
 );
