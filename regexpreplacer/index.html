@@ -575,12 +575,14 @@ switch (action) {
       let loop = true;
       while(loop) {
         let rpls = rows[i].replace;
-        rpls = rpls.replace(/\\t/, "\t");
-        rpls = rpls.replace(/\\v/, "\v");
-        rpls = rpls.replace(/\\f/, "\f");
-        rpls = rpls.replace(/\\r/, "\r");
-        rpls = rpls.replace(/\\n/, "\n");
-        rpls = rpls.replace(/\\0/, "\0");
+        rpls = rpls.replace(/((?:^|[^\\])(?:\\\\)*)\\t/g, "$1\t");
+        rpls = rpls.replace(/((?:^|[^\\])(?:\\\\)*)\\v/g, "$1\v");
+        rpls = rpls.replace(/((?:^|[^\\])(?:\\\\)*)\\f/g, "$1\f");
+        rpls = rpls.replace(/((?:^|[^\\])(?:\\\\)*)\\r/g, "$1\r");
+        rpls = rpls.replace(/((?:^|[^\\])(?:\\\\)*)\\n/g, "$1\n");
+        rpls = rpls.replace(/((?:^|[^\\])(?:\\\\)*)\\0/g, "$1\0");
+        rpls = rpls.replace(/((?:^|[^\\])(?:\\\\)*)\\/g, "$1");
+        rpls = rpls.replace(/\\\\/g, "\\");
         let resultString1 = resultString.replace(new RegExp(rows[i].find, (rows[i].registerSensitive? "": "i") + (rows[i].multiline? "m": "") + (rows[i].firstOnly? "": "g")), rpls);
         loop = (rows[i].loop && resultString1 != resultString);
         resultString = resultString1;
