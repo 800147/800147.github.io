@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>Show HTML</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+
+    <style type="text/css">
+      input {
+        border-style: solid;
+        border-width: 1px;
+        border-radius: 2px;
+        border-color: lightgray;
+      }
+      input::placeholder {
+        opacity: 1;
+        text-align: center;
+        color: lightgray;
+      }
+    </style>
+    <script type="text/javascript">
+      const getUrlParams = () => {
+        const params = { };
+        if (window.location.search == "") return params;
+        window.location.search.substr(1).split('&').forEach(param => {
+          let p = param.split('=', 2);
+          params[p[0]] = p.length == 1? "": decodeURIComponent(p[1].replace(/\+/g, " "));
+        });
+        return params;
+      };
+
+      window.addEventListener("DOMContentLoaded", () => document.getElementById("content").innerHTML = getUrlParams().text);
+    </script>
+  </head>
+  <body>
+    <div id="content"></div>
+    <form method="GET" onchange="this.submit();">
+      <input type="text" name="text" placeholder="paste HTML code here" />
+    </form>
+  </body>
+</html>
