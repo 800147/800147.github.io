@@ -31,13 +31,15 @@
         return params;
       };
 
-      window.addEventListener("DOMContentLoaded", () => document.getElementById("content").innerHTML = getUrlParams().text);
+      const params = getUrlParams();
+      window.addEventListener("DOMContentLoaded", () => document.getElementById("content").innerHTML = (params.text==null? "": params.text));
     </script>
   </head>
   <body>
     <div id="content"></div>
-    <form method="GET" onchange="this.submit();">
-      <input type="text" name="text" placeholder="paste HTML code here" />
+    <br />
+    <form method="GET">
+      <input type="text" name="text" placeholder="type HTML code here" />
     </form>
   </body>
 </html>
