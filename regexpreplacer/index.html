@@ -2,10 +2,9 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <title>RegExp Replacer</title>
-
-    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    
+    <title>RegExp Replacer</title>
 
     <style type="text/css">
 :root { /* vars for modification */
@@ -39,10 +38,7 @@ body {
   margin: 0;
 }
 * {
-  font-family: var(--font-family);
-  font-size: var(--font-size);
-  line-height: var(--line-height);
-  color: var(--color);
+  -moz-appearance: none;
   -webkit-appearance: none;
 }
 :focus {
@@ -156,6 +152,11 @@ body {
   padding: var(--half-indent);
 }
 .row__result {
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  line-height: var(--line-height);
+  color: var(--color);
+
   padding: calc(var(--half-indent) + var(--border-width) + var(--padding-v))  calc(var(--half-indent) + var(--border-width) + var(--padding-h));
   margin: 0;
 }
@@ -213,6 +214,11 @@ body {
 
 
 .button, .submit {
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  line-height: var(--line-height);
+  color: var(--color);
+
   display: inline-block;
   height: var(--input-height);
   box-sizing: border-box;
@@ -295,8 +301,8 @@ body {
 
 .number-input__input::-webkit-outer-spin-button,
 .number-input__input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .number-input_with-pretext > .number-input__input {
