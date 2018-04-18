@@ -573,8 +573,8 @@ if (typeof params["new"] !== "undefined") {
 if (typeof params["replace"] !== "undefined") {
   action = "replace";
 }
-const result = [];
-const copyToClipboardButton = [];
+let result = null;
+let copyToClipboardButton = null;
 
 switch (action) {
   case "new":
@@ -614,19 +614,15 @@ switch (action) {
         resultString = resultString1;
       }
     }
-    result.push(
-      __("div", { "class": "row" },
-        used(__("pre", { "class": "row__result" }, resultString ),
-          el => resultElement = el
-        )
+    result = __("div", { "class": "row" },
+      used(__("pre", { "class": "row__result" }, resultString ),
+        el => resultElement = el
       )
     );
-    copyToClipboardButton.push(
-      __("div", { "class": "row row_panel" },
-        __("div", { "class": "row__flex row__flex_menu justify-content_flex-end" },
-          used(__button({}, "copy to clipboard"),
-            el => copyButton = el
-          )
+    copyToClipboardButton = __("div", { "class": "row row_panel" },
+      __("div", { "class": "row__flex row__flex_menu justify-content_flex-end" },
+        used(__button({}, "copy to clipboard"),
+          el => copyButton = el
         )
       )
     );
@@ -668,9 +664,9 @@ const body = __("body", null,
     )
   ),
   __("div", { "id": "result" },
-    ...result
+    result
   ),
-  ...copyToClipboardButton
+  copyToClipboardButton
 );
 document.addEventListener("DOMContentLoaded", () => document.documentElement.replaceChild(body, document.body), false);
     </script>
