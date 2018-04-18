@@ -418,21 +418,21 @@ const getUrlParams = () => {
 
 
 //custom elements
-Element.prototype.usedIn = function(func) {
-  func(this);
-  return this;
-};
-const appendChildren = (element, ...children) =>
-children.forEach(child =>
-  element.appendChild(typeof(child) === "string"? document.createTextNode(child): child)
-);
+const used = (obj, ...funcs) => (funcs.forEach(func => func(obj)), obj);
+const appendChildren = (el, ...children) =>
+  children.forEach(child => {
+    if (child != null) {
+      el.appendChild(typeof(child) === "string"? document.createTextNode(child): child)
+    }
+  })
+;
 const __ = (tagName, attrs = null, ...children) => {
-  const element = document.createElement(tagName);
+  const el = document.createElement(tagName);
   if (attrs != null) {
-    Object.keys(attrs).forEach(name => element.setAttribute(name, attrs[name]));
+    Object.keys(attrs).forEach(name => el.setAttribute(name, attrs[name]));
   }
-  appendChildren(element, ...children);
-  return element;
+  appendChildren(el, ...children);
+  return el;
 };
 
 
@@ -506,9 +506,12 @@ const __checkboxButton = ({
   checked = false
 }, ...content) =>
 __("div", { "class": "checkbox-button" + (short? " checkbox-button_short": "") },
-  __("input", { "type": "checkbox", "class": "checkbox-button__checkbox", "id": (specialId != null? specialId: (form + "_" + name)), "name": name, "form": form }).usedIn(el => { if (checked) el.checked = true; }),
-  __("label", { "class": "checkbox-button__label", "for": (specialId != null? specialId: (form + "_" + name)) }, ...content)
-    .usedIn(el => { if (title != null) el.title = title; })
+  used(__("input", { "type": "checkbox", "class": "checkbox-button__checkbox", "id": (specialId != null? specialId: (form + "_" + name)), "name": name, "form": form }),
+    el => { if (checked) el.checked = true; }
+  ),
+  used(__("label", { "class": "checkbox-button__label", "for": (specialId != null? specialId: (form + "_" + name)) }, ...content),
+    el => { if (title != null) el.title = title; }
+  )
 );
 
 const __lineInput = ({
@@ -540,9 +543,9 @@ const __submit = ({
   value = "",
   specialId = ""
 }) =>
-__("input", { "type": "submit", "class": "submit" + (short? " submit_short": ""), "name": name, "value": value, "form": form, "id": (specialId != null? specialId: (form + "_" + name)) })
-  .usedIn(el => { if (title != null) el.title = title; })
-;
+used(__("input", { "type": "submit", "class": "submit" + (short? " submit_short": ""), "name": name, "value": value, "form": form, "id": (specialId != null? specialId: (form + "_" + name)) }),
+  el => { if (title != null) el.title = title; }
+);
 
 const __numberInput = ({
   name = "",
@@ -563,36 +566,50 @@ const __numberInput = ({
     if (integer) value = Math.round(value);
     input.value = value;
   };
-  return __("div", { "class": "number-input" }, 
-    __("div", { "class": "number-input__pre-text" }, String(preText)), 
-    __lineInput({ "value": value, "form": form, "name": name })
-      .usedIn(el => el.type = "number")
-      .usedIn(el => { if (min != null) el.min = min; })
-      .usedIn(el => { if (max != null) el.max = max; })
-      .usedIn(el => { if (integer) el.step = 1; else el.step = "any"; })
-      .usedIn(el => input = el)
-      .usedIn(el => el.classList.add("number-input__input"))
-      .usedIn(el => el.addEventListener("change", e => change(0))),
-    __("div", { "class": "number-input__post-text" }, String(postText)),
-    __("div", { "class": "number-input__buttons" }, 
-      __button({}, "+").usedIn(el => el.classList.add("number-input__plus"))
-        .usedIn(el => addClickAndPressEvent(el))
-        .usedIn(el => el.addEventListener("click-and-press", e => change(1))),
-      __button({}, "-").usedIn(el => el.classList.add("number-input__minus"))
-        .usedIn(el => addClickAndPressEvent(el))
-        .usedIn(el => el.addEventListener("click-and-press", e => change(-1)))
-    )
-  )
-    .usedIn(el => { if (preText != null) el.classList.add("number-input_with-pretext"); })
-    .usedIn(el => { if (postText != null) el.classList.add("number-input_with-posttext"); });
+  return used(
+    __("div", { "class": "number-input" }, 
+      __("div", { "class": "number-input__pre-text" }, String(preText)), 
+      used(__lineInput({ "value": value, "form": form, "name": name }),
+        el => { 
+          el.type = "number";
+          if (min != null) el.min = min;
+          if (max != null) el.max = max;
+          if (integer) el.step = 1;
+          else el.step = "any";
+        },
+        el => el.classList.add("number-input__input"),
+        el => input = el,
+        el => el.addEventListener("change", e => change(0)),
+      ),
+      __("div", { "class": "number-input__post-text" }, String(postText)),
+      __("div", { "class": "number-input__buttons" }, 
+        used(__button({}, "+"),
+          el => el.classList.add("number-input__plus"),
+          el => addClickAndPressEvent(el),
+          el => el.addEventListener("click-and-press", e => change(1))
+        ),
+        used(__button({}, "-"),
+          el => el.classList.add("number-input__minus"),
+          el => addClickAndPressEvent(el),
+          el => el.addEventListener("click-and-press", e => change(-1))
+        )
+      )
+    ),
+    el => { if (preText != null) el.classList.add("number-input_with-pretext"); },
+    el => { if (postText != null) el.classList.add("number-input_with-posttext"); }
+  );
 };
 
 
 const __ruleRow = (n, find = "", replace = "", registerSensitive = false, multiline = false, firstOnly = false, loop = false) =>
 __("div", { "class": "row" },
   __("div", { "class": "row__flex justify-content_flex-end" },
-    __lineInput({ "name": "f" + n, "placeholder": "write find RegExp here", "form": "form-0", "value": find }).usedIn(el => el.classList.add("flex-grow_1")),
-    __lineInput({ "name": "r" + n, "placeholder": "write replace RegExp here", "form": "form-0", "value": replace }).usedIn(el => el.classList.add("flex-grow_1")),
+    used(__lineInput({ "name": "f" + n, "placeholder": "write find RegExp here", "form": "form-0", "value": find }),
+      el => el.classList.add("flex-grow_1")
+    ),
+    used(__lineInput({ "name": "r" + n, "placeholder": "write replace RegExp here", "form": "form-0", "value": replace }),
+      el => el.classList.add("flex-grow_1")
+    ),
     __("div", { "class": "row__subflex justify-content_flex-end" },
       __checkboxButton({ "name": "s" + n, "title": "register-sensitive", "form": "form-0", "short": true, "checked": registerSensitive }, "aA"),
       __checkboxButton({ "name": "m" + n, "title": "multilene search", "form": "form-0", "short": true, "checked": multiline }, "^$"),
@@ -637,12 +654,14 @@ const body = __("body", null,
   __("form", { "class": "form", "action": "", "id": "form-0", "method": "get" }),
   __("div", { "class": "row row_panel top-menu" },
     __("div", { "class": "row__flex row__flex_menu justify-content_flex-end" },
-      __lineInput({ "form": "form-0", "name": "regex", "value": regex, "placeholder": "write regular expression here" })
-        .usedIn(el => el.classList.add("flex-grow_1")),
+      used(__lineInput({ "form": "form-0", "name": "regex", "value": regex, "placeholder": "write regular expression here" }),
+        el => el.classList.add("flex-grow_1")
+      ),
       __("div", { "class": "row__subflex justify-content_flex-end" },
         __submit({ "form": "form-0", "value": "generate" }),
-        __numberInput({ "form": "form-0", "name": "count", "value": count, "integer": true, "min": 1, "max": 999, "preText": "x" })
-          .usedIn(el => el.classList.add("top-menu__count"))
+        used(__numberInput({ "form": "form-0", "name": "count", "value": count, "integer": true, "min": 1, "max": 999, "preText": "x" }),
+          el => el.classList.add("top-menu__count")
+        )
       )
     )
   )
@@ -654,21 +673,25 @@ let copyFirstButton;
 let resultsElement;
 if (results.length > 0) {
   appendChildren(body,
-    __("div", { "class": "results", "id": "result" },
-      ...results
-    ).usedIn(el => resultsElement = el)
+    used(__("div", { "class": "results", "id": "result" },
+        ...results
+      ),
+      el => resultsElement = el
+    )
   );
 }
 if (resultsOk) {
   appendChildren(body,
     __("div", { "class": "row row_panel top-menu bottom" },
       __("div", { "class": "row__flex row__flex_menu justify-content_flex-end" },
-        __button({}, "first to clipboard")
-          .usedIn(el => el.classList.add("bottom-menu__button"))
-          .usedIn(el => copyFirstButton = el),
-        __button({}, "all to clipboard")
-          .usedIn(el => el.classList.add("bottom-menu__button"))
-          .usedIn(el => copyAllButton = el)
+        used(__button({}, "first to clipboard"),
+          el => el.classList.add("bottom-menu__button"),
+          el => copyFirstButton = el
+        ),
+        used(__button({}, "all to clipboard"),
+          el => el.classList.add("bottom-menu__button"),
+          el => copyAllButton = el
+        )
       )
     )
   );
