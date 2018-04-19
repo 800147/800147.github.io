@@ -1,0 +1,75 @@
+body, root {
+  margin: 0;
+  padding: 0;
+  background-color: #000;
+  text-align: center;
+  overflow: hidden;
+  font-family: monospace;
+}
+.card {
+  background-color: #333;
+  border-radius: calc(1vw * var(--size) / 10);
+  --size: 20;
+  position: absolute;
+  top: calc(var(--row) * (20vh + 4vw) + (100vh - (4 * (20vh + 4vw) - 4vw)) / 2);
+  left: calc(var(--col) * (20vw + 4vw) + 4vw);
+  width: calc(var(--size) * 1vw);
+  height: calc(var(--size) * 1vh);
+  opacity: 1;
+  transition: all 1s;
+  transform: perspective(500px) translate3d(0, 0, 0);
+}
+[data-state='1'] .card[data-phase='0'] {
+  opacity: 0;
+}
+.card[data-phase='0'] {
+  z-index: 0;
+}
+.card[data-phase='1'] {
+  z-index: 1000;
+  top: 10vh;
+  left: 10vw;
+  --size: 80;
+  transform: perspective(500px) rotateY(180deg);
+}
+.card[data-phase='2'] {
+  z-index: 1000;
+  top: 10vh;
+  left: 10vw;
+  --size: 80;
+  transform: perspective(500px) rotateY(0deg);
+}
+.card__decoration {
+  position: absolute;
+  --delay: calc(1vw * var(--size) / 20);
+  width: auto;
+  height: auto;
+  top: var(--delay);
+  right: var(--delay);
+  bottom: var(--delay);
+  left: var(--delay);
+  border-style: solid;
+  border-radius: calc(1vw * var(--size) / 15);
+  border-width: calc(1vw * var(--size) / 100);
+  border-color: #fff;
+  transition: all 1s, visibility 0s linear 0.3s;
+  visibility: hidden;
+}
+.card[data-phase='1'] > .card__decoration {
+  visibility: visible;
+}
+.card__label {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  --font-size: calc(var(--size) * 1vw / 3);
+  font-size: var(--font-size);
+  line-height: 1;
+  margin-top: calc(var(--size) * 1vh / 2 - var(--font-size) / 2);
+  color: #FFF;
+  transition: all 1s, visibility 0s linear 0.3s;
+  visibility: visible;
+}
+.card[data-phase='1'] > .card__label {
+  visibility: hidden;
+}
