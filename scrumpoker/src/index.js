@@ -1,13 +1,20 @@
 "use strict";
 
-const root = __("div", { "class": "root", "data-state": 0 });
+const UNLOCKED_STATE = 0;
+const LOCKED_STATE = 1;
+
+const READY_STATE = 0;
+const SELECTED_STATE = 1;
+const DISPLAYED_STATE = 2;
+
+const root = __("div", { "class": "root", "data-state": UNLOCKED_STATE });
 document.addEventListener("DOMContentLoaded", () => document.body.appendChild(root), false);
 
 const __card = (label, row, col) => used(
   __("div",
     {
-      "class": ("card" + (label == "" ? " card_empty": "")),
-      "data-phase": 0,
+      "class": ("card" + (label === "" ? " card_empty": "")),
+      "data-phase": READY_STATE,
       "style": "--row: " + row + "; --col: " + col + ";"
     },
     __("div", {"class": "card__decoration"}),
@@ -16,13 +23,20 @@ const __card = (label, row, col) => used(
     )
   ),
   el => el.onclick = element => {
-    let newPhase = Number(el.dataset.phase) + 1;
-    root.dataset.state = 1;
-    if (newPhase > 2) {
-      root.dataset.state = 0;
-      newPhase = 0;
+    switch(Number(el.dataset.phase)) {
+      case READY_STATE:
+        if (Number(root.dataset.state) === LOCKED_STATE) {
+          return;
+        }
+        // no break
+      case SELECTED_STATE:
+        el.dataset.phase = Number(el.dataset.phase) + 1;
+        root.dataset.state = LOCKED_STATE;
+        break;
+      case DISPLAYED_STATE:
+        root.dataset.state = UNLOCKED_STATE;
+        el.dataset.phase = READY_STATE;
     }
-    el.dataset.phase = newPhase;
   }
 );
 appendChildren(root,
@@ -41,11 +55,11 @@ appendChildren(root,
   __card("\u2615", 3, 1.5)
 );
 
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./src/sw.js')
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("./src/sw.js")
   .then(() => 
     navigator.serviceWorker.ready
-    .then((worker) => worker.sync.register('syncdata'))
+    .then((worker) => worker.sync.register("syncdata"))
   )
   .catch(err => console.log(err));
 }
