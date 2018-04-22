@@ -439,7 +439,7 @@ const __ = (tagName, attrs = null, ...children) => {
 
 
 //start
-const addClickAndPressEvent = el => {
+const addClickAndHoldEvent = el => {
   const PERIOD_IN_MILLISECONDS = 50;
   const IDLE_STEPS = 10;
 
@@ -447,10 +447,7 @@ const addClickAndPressEvent = el => {
   let preventMouse = false;
   let preventClick = false;
   let interval = null;
-  const dispatch = () => {
-    const event = new Event("click-and-press");
-    el.dispatchEvent(event);
-  }
+  const dispatch = () => el.dispatchEvent(new Event("click-and-hold"));
   const clear = () => {
     if (interval != null) {
       clearInterval(interval);
@@ -585,13 +582,13 @@ const __numberInput = ({
       __("div", { "class": "number-input__buttons" }, 
         used(__button({}, "+"),
           el => el.classList.add("number-input__plus"),
-          el => addClickAndPressEvent(el),
-          el => el.addEventListener("click-and-press", e => change(1))
+          el => addClickAndHoldEvent(el),
+          el => el.addEventListener("click-and-hold", e => change(1))
         ),
         used(__button({}, "-"),
           el => el.classList.add("number-input__minus"),
-          el => addClickAndPressEvent(el),
-          el => el.addEventListener("click-and-press", e => change(-1))
+          el => addClickAndHoldEvent(el),
+          el => el.addEventListener("click-and-hold", e => change(-1))
         )
       )
     ),
