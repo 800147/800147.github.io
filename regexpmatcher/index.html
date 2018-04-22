@@ -443,11 +443,13 @@ const addClickAndHoldEvent = el => {
   const PERIOD_IN_MILLISECONDS = 50;
   const IDLE_STEPS = 10;
 
-  let n = 0;
+  let idleSteps = 0;
   let preventMouse = false;
   let preventClick = false;
   let interval = null;
+
   const dispatch = () => el.dispatchEvent(new Event("click-and-hold"));
+  const tick = () => (idleSteps > 0? idleSteps--: dispatch());
   const clear = () => {
     if (interval != null) {
       clearInterval(interval);
@@ -457,15 +459,8 @@ const addClickAndHoldEvent = el => {
   const set = () => {
     clear();
     dispatch();
-    n = IDLE_STEPS;
+    idleSteps = IDLE_STEPS;
     interval = setInterval(tick, PERIOD_IN_MILLISECONDS);
-  };
-  const tick = () => {
-    if (n > 0) {
-      n--;
-    } else {
-      dispatch();
-    }
   };
 
   el.addEventListener("touchstart", e => {
