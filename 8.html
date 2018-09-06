@@ -16,11 +16,9 @@
             box-sizing: border-box;
 
             -webkit-box-pack: justify;
-            -ms-flex-pack: justify;
             justify-content: space-between;
 
-            -webkit-align-items: center;
-            -ms-flex-align: center;
+            -webkit-box-align: center;
             align-items: center;
 
             padding-bottom: 20px;
@@ -29,10 +27,6 @@
             background-color: yellow;
             /*padding-right: 15px;*/
             box-sizing: border-box;
-        }
-        .first::after {
-            content: '';
-            width: 20px;
         }
         .second {
             background-color: grey;
@@ -50,13 +44,13 @@
     <div class="content">
         <div class="flex">
             <div class="block first">
-                какой-то длинный текст ни о чём
+                какой-то длинный текст ни о чём, но длинный
             </div>
             <div class="block second"></div>
         </div>
         <div class="flex secondflex">
             <div class="block first">
-                какой-то длинный текст ни о чём
+                какой-то длинный текст ни о чём, но длинный
             </div>
             <div class="block second"></div>
         </div>
