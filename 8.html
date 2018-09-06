@@ -11,22 +11,21 @@
         }
         .flex {
             display: -webkit-box;
-            display: -ms-flexbox;
             display: flex;
 
             -webkit-box-pack: justify;
             justify-content: space-between;
 
-            /*-webkit-box-align: center;*/
             align-items: center;
 
-            padding-bottom: 20px;
-            width: auto;
+            margin-bottom: 20px;
         }
         .first {
-            background-color: yellow;
+            -webkit-box-flex: 1;
+            background-color: green;
         }
         .second {
+            -webkit-box-flex: 0;
             background-color: black;
             height: 30px;
             width: 60px;
