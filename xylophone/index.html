@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ксилофон</title>
+    <style type="text/css">
+      body {
+        margin: 2px;
+        text-align: center;
+        padding-bottom: 8em;
+        font-size: 11px;
+      }
+      .keys {
+        margin: 0 auto;
+        --width: 2.4ex;
+        --margin: 4px;
+        --keys-count: 13;
+        width: calc((var(--width) + var(--margin)) * var(--keys-count) - var(--margin));
+      }
+      .key {
+        width: 100%;
+        position: relative;
+        height: 1.2em;
+        border-bottom: #ddd var(--margin) solid;
+      }
+      .key:first-child {
+        border-top: #ddd var(--margin) solid;
+      }
+      .key__n {
+        position: absolute;
+        width: var(--width);
+        top: 0;
+        left: calc((var(--width) + var(--margin)) * var(--index));
+        line-height: 1.2em;
+        text-align: center;
+        background-color: #888;
+        color: white;
+        border-radius: 2px;
+      }
+    </style>
+    <script type="text/javascript" defer>
+      'use strict';
+
+      //urlParams
+      const getUrlParams = () => {
+        const params = Object.create(null);
+        if (window.location.search == "") return params;
+        window.location.search.substr(1).split("&").forEach(param => {
+          let p = param.split("=", 2);
+          params[p[0]] = p.length == 1? "": decodeURIComponent(p[1].replace(/\+/g, " "));
+        });
+        return params;
+      };
+
+      //custom elements
+      const used = (obj, ...funcs) => (funcs.forEach(func => func(obj)), obj);
+      const appendChildren = (el, ...children) =>
+        children.forEach(child => {
+          if (!child) {
+            return;
+          }
+
+          if (Array.isArray(child)) {
+            appendChildren(el, ...child);
+
+            return;
+          }
+
+          if (child instanceof Node) {
+            el.appendChild(child);
+
+            return;
+          }
+
+          el.appendChild(document.createTextNode(child));
+        })
+      ;
+      const __ = (tagName, attrs = null, ...children) => {
+        const el = document.createElement(tagName);
+
+        if (attrs != null) {
+          Object.keys(attrs).forEach(
+            name => el.setAttribute(name, attrs[name])
+          );
+        }
+
+        appendChildren(el, ...children);
+
+        return el;
+      };
+
+      let { name, schema, keysCount = 12 } = getUrlParams();
+      keysCount = Number(keysCount);
+
+      const keys = __('div', { class: 'keys', style: `--keys-count: ${keysCount}` },
+        schema.split(',').map(
+          key => __('div', { class: 'keys__key key' },
+            used(
+              __('div', { class: 'key__n', style: `--index: ${key - 1}` }, key),
+              el => console.log(el) && el.style.setPropertyValue('index', String(key))
+            )
+          )
+        )
+      );
+
+      window.addEventListener('load', () => {
+        const body = document.getElementsByTagName('body')[0];
+
+        if (name) {
+          body.appendChild(__('h1', {}, name));
+          document.title = `${name} — мелодия для ксилофона`;
+        }
+
+        body.appendChild(keys);
+      });
+    </script>
+  </head>
+  <body id="body">
+  </body>
+</html>
