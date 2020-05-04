@@ -24,6 +24,9 @@
         height: 1.2em;
         border-bottom: #ddd var(--margin) solid;
       }
+      .key:empty {
+        height: 0;
+      }
       .key:first-child {
         border-top: #ddd var(--margin) solid;
       }
@@ -96,10 +99,7 @@
       const keys = __('div', { class: 'keys', style: `--keys-count: ${keysCount}` },
         schema.split(',').map(
           key => __('div', { class: 'keys__key key' },
-            used(
-              __('div', { class: 'key__n', style: `--index: ${key - 1}` }, key),
-              el => console.log(el) && el.style.setPropertyValue('index', String(key))
-            )
+            key !== '' && __('div', { class: 'key__n', style: `--index: ${key - 1}` }, key)
           )
         )
       );
