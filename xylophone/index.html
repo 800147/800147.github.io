@@ -64,23 +64,10 @@
       const used = (obj, ...funcs) => (funcs.forEach(func => func(obj)), obj);
       const appendChildren = (el, ...children) =>
         children.forEach(child => {
-          if (!child) {
-            return;
-          }
-
-          if (Array.isArray(child)) {
-            appendChildren(el, ...child);
-
-            return;
-          }
-
-          if (child instanceof Node) {
-            el.appendChild(child);
-
-            return;
-          }
-
-          el.appendChild(document.createTextNode(child));
+          if (!child) { return; }
+          if (Array.isArray(child)) { appendChildren(el, ...child); }
+          else if (child instanceof Node) { el.appendChild(child); }
+          else { el.appendChild(document.createTextNode(child)); }
         })
       ;
       const __ = (tagName, attrs = null, ...children) => {
