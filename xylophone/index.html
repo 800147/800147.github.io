@@ -49,48 +49,41 @@
     <script type="text/javascript" defer>
       'use strict';
 
-      //urlParams
+      // urlParams
       const getUrlParams = () => {
         const params = Object.create(null);
-        if (window.location.search == "") return params;
-        window.location.search.substr(1).split("&").forEach(param => {
-          let p = param.split("=", 2);
-          params[p[0]] = p.length == 1? "": decodeURIComponent(p[1].replace(/\+/g, " "));
+        window.location.search.substr(1).split('&').forEach(param => {
+          const [key, value] = param.split('=', 2);
+          params[key] = value === undefined ? true : decodeURIComponent(value);
         });
         return params;
       };
 
-      //custom elements
+      // custom elements
       const used = (obj, ...funcs) => (funcs.forEach(func => func(obj)), obj);
-      const appendChildren = (el, ...children) =>
-        children.forEach(child => {
-          if (!child) { return; }
-          if (Array.isArray(child)) { appendChildren(el, ...child); }
-          else if (child instanceof Node) { el.appendChild(child); }
-          else { el.appendChild(document.createTextNode(child)); }
-        })
-      ;
-      const __ = (tagName, attrs = null, ...children) => {
+      const appendChildren = (el, ...children) => children.forEach(child => {
+        if (!child) { return; }
+        if (Array.isArray(child)) { appendChildren(el, ...child); }
+        else if (child instanceof Node) { el.appendChild(child); }
+        else { el.appendChild(document.createTextNode(child)); }
+      });
+      const __ = (tagName, attrs, ...children) => {
         const el = document.createElement(tagName);
-
-        if (attrs != null) {
-          Object.keys(attrs).forEach(
-            name => el.setAttribute(name, attrs[name])
-          );
-        }
-
+        attrs && Object.keys(attrs).forEach(name => el.setAttribute(name, attrs[name]));
         appendChildren(el, ...children);
-
         return el;
       };
 
+      // start
       let { name, schema, keysCount = 12, source } = getUrlParams();
       keysCount = Number(keysCount);
 
       const keys = __('div', { class: 'keys', style: `--keys-count: ${keysCount}` },
         schema.split(',').map(
           key => __('div', { class: 'keys__key key' },
-            key !== '' && __('div', { class: 'key__n', style: `--index: ${key - 1}` }, key)
+            key !== '' && key.split('+').map(
+              key => __('div', { class: 'key__n', style: `--index: ${key - 1}` }, key)
+            )
           )
         )
       );
@@ -111,6 +104,5 @@
       });
     </script>
   </head>
-  <body id="body">
-  </body>
+  <body id="body"></body>
 </html>
