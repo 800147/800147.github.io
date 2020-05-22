@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html lang="ru" />
 <head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>redirect</title>
 </head>
 <body>
 <script>
+'use strict';
+
 // urlParams
 const getUrlParams = () => {
   const params = Object.create(null);
@@ -14,13 +18,16 @@ const getUrlParams = () => {
   });
   return params;
 };
+  
 const appendToBody = text => document.getElementsByTagname('body')[0].appendChild(document.createTextNode(text));
+
 const { url } = getUrlParams();
+
 if (url) {
-appendToBody(`Перенаправлено на ${url}`);
-window.location.replace('http://ya.ru');
+  appendToBody(`Перенаправлено на ${url}`);
+  window.location.replace('http://ya.ru');
 } else {
-appendToBody('Введи в get-параметр "url" страницу, на которую надо перейти. Так можно вставлять любые ссылки в Google Docs, например.');
+  appendToBody('Введи в get-параметр "url" страницу, на которую надо перейти. Так можно вставлять любые ссылки в Google Docs, например.');
 }
 </script>
 </body>
