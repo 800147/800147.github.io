@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ru" />
+<head>
+<title>redirect</title>
+</head>
+<body>
+<script>
+// urlParams
+const getUrlParams = () => {
+  const params = Object.create(null);
+  window.location.search.substr(1).split('&').forEach(param => {
+    const [key, value] = param.split('=', 2);
+    params[key] = value === undefined ? true : decodeURIComponent(value);
+  });
+  return params;
+};
+const appendToBody = text => document.getElementsByTagname('body')[0].appendChild(document.createTextNode(text));
+const { url } = getUrlParams();
+if (url) {
+appendToBody(`Перенаправлено на ${url}`);
+window.location.replace('http://ya.ru');
+} else {
+appendToBody('Введи в get-параметр "url" страницу, на которую надо перейти. Так можно вставлять любые ссылки в Google Docs, например.');
+}
+</script>
+</body>
+</html>
