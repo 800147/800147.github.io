@@ -25,7 +25,7 @@ const { url } = getUrlParams();
 
 if (url) {
   appendToBody(`Перенаправлено на ${url}`);
-  window.location.replace('http://ya.ru');
+  window.location.replace(url);
 } else {
   appendToBody('Введи в get-параметр "url" страницу, на которую надо перейти. Так можно вставлять любые ссылки в Google Docs, например.');
 }
