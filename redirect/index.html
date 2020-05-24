@@ -21,11 +21,15 @@ const getUrlParams = () => {
   
 const appendToBody = text => document.getElementsByTagName('body')[0].appendChild(document.createTextNode(text));
 
-const { url } = getUrlParams();
+const { url, close } = getUrlParams();
 
 if (url) {
-  window.location.replace(url);
-  appendToBody(`Перенаправлено на ${url}`);
+  if (close) {
+    window.open(url, '_self').close();
+  } else {
+    window.location.replace(url);  
+    appendToBody(`Перенаправлено на ${url}`);
+  }
 } else {
   appendToBody('Введи в get-параметр "url" страницу, на которую надо перейти. Так можно вставлять любые ссылки в Google Docs, например.');
 }
