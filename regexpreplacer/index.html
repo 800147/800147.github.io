@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    
+
     <title>RegExp Replacer</title>
 
     <style type="text/css">
@@ -62,7 +62,7 @@ body {
   font-size: var(--font-size);
   line-height: var(--line-height);
   color: var(--color);
-  
+
   display: block;
   -webkit-user-select: none;  /* Chrome all / Safari all */
   -moz-user-select: none;     /* Firefox all */
@@ -100,7 +100,7 @@ body {
   font-size: var(--font-size);
   line-height: var(--line-height);
   color: var(--color);
-  
+
   display: inline-block;
   box-sizing: border-box;
   height: var(--input-height);
@@ -126,7 +126,7 @@ body {
   font-size: var(--font-size);
   line-height: var(--line-height);
   color: var(--color);
-  
+
   display: inline-block;
   box-sizing: border-box;
   min-height: var(--input-height);
@@ -151,6 +151,13 @@ body {
 .row {
   padding: var(--half-indent);
 }
+.row_error {
+  background-color: var(--error-color);
+}
+.row_error .row__result {
+  color: white;
+  font-weight: bold;
+}
 .row__result {
   font-family: var(--font-family);
   font-size: var(--font-size);
@@ -165,7 +172,7 @@ body {
 }
 .row_panel {
   --panel-color: var(--odd-background-color);
-  background: 
+  background:
   linear-gradient(-45deg,
     var(--background-color) 0%, var(--background-color) 25%,
     var(--panel-color) 25%, var(--panel-color) 50%,
@@ -182,7 +189,7 @@ body {
   align-self: baseline;
   max-width: var(--max-width);
 }
-.row__flex > .row__subflex {
+.row__flex .row__subflex {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -200,7 +207,7 @@ body {
 }
 
 
-      
+
 .justify-content_flex-end {
   justify-content: flex-end;
 }
@@ -275,7 +282,7 @@ body {
   line-height: var(--line-height);
   color: var(--color);
   background-color: var(--background-color);
-  
+
   display: inline-block;
   box-sizing: border-box;
   height: var(--input-height);
@@ -330,7 +337,7 @@ body {
   line-height: var(--line-height);
   color: var(--color);
   background-color: var(--background-color);
-  
+
   display: inline-block;
   box-sizing: border-box;
   height: var(--input-height);
@@ -411,7 +418,7 @@ const __ = (tagName, attrs = null, ...children) => {
 
 //start
 const __checkboxButton = ({
-  short = false, 
+  short = false,
   name = "",
   title = null,
   form = "",
@@ -480,10 +487,10 @@ const __numberInput = ({
     input.value = value;
   };
   return used(
-    __("div", { "class": "number-input" }, 
-      __("div", { "class": "number-input__pre-text" }, String(preText)), 
+    __("div", { "class": "number-input" },
+      __("div", { "class": "number-input__pre-text" }, String(preText)),
       used(__lineInput({ "value": value, "form": form, "name": name }),
-        el => { 
+        el => {
           el.type = "number";
           if (min != null) el.min = min;
           if (max != null) el.max = max;
@@ -495,7 +502,7 @@ const __numberInput = ({
         el => el.addEventListener("change", e => change(0)),
       ),
       __("div", { "class": "number-input__post-text" }, String(postText)),
-      __("div", { "class": "number-input__buttons" }, 
+      __("div", { "class": "number-input__buttons" },
         used(__button({}, "+"),
           el => el.classList.add("number-input__plus"),
           el => addClickAndPressEvent(el),
@@ -520,17 +527,19 @@ __("div", { "class": "row" },
     used(__lineInput({ "name": "f" + n, "placeholder": "write find RegExp here", "form": "form-0", "value": find }),
       el => el.classList.add("flex-grow_1")
     ),
-    used(__lineInput({ "name": "r" + n, "placeholder": "write replace RegExp here", "form": "form-0", "value": replace }),
-      el => el.classList.add("flex-grow_1")
-    ),
-    __("div", { "class": "row__subflex justify-content_flex-end" },
-      __checkboxButton({ "name": "s" + n, "title": "register-sensitive", "form": "form-0", "short": true, "checked": registerSensitive }, "aA"),
-      __checkboxButton({ "name": "m" + n, "title": "multilene search", "form": "form-0", "short": true, "checked": multiline }, "^$"),
-      __checkboxButton({ "name": "o" + n, "title": "first only", "form": "form-0", "short": true, "checked": firstOnly }, "=1"),
-      __checkboxButton({ "name": "l" + n, "title": "looped", "form": "form-0", "short": true, "checked": loop }, "↻"),
-      __submit({ "short": true, "value": "∧", "title": "move up", "form": "form-0", "name": "up-" + n }),
-      __submit({ "short": true, "value": "∨", "title": "move down", "form": "form-0", "name": "down-" + n }),
-      __submit({ "short": true, "value": "X", "title": "remove rule", "form": "form-0", "name": "remove-" + n })
+    __("div", { "class": "row__subflex justify-content_flex-end flex-grow_1" },
+      used(__lineInput({ "name": "r" + n, "placeholder": "write replace RegExp here", "form": "form-0", "value": replace }),
+        el => el.classList.add("flex-grow_1")
+      ),
+      __("div", { "class": "row__subflex justify-content_flex-end" },
+        __checkboxButton({ "name": "s" + n, "title": "register-sensitive", "form": "form-0", "short": true, "checked": registerSensitive }, "aA"),
+        __checkboxButton({ "name": "m" + n, "title": "multilene search", "form": "form-0", "short": true, "checked": multiline }, "^$"),
+        __checkboxButton({ "name": "o" + n, "title": "first only", "form": "form-0", "short": true, "checked": firstOnly }, "=1"),
+        __checkboxButton({ "name": "l" + n, "title": "looped", "form": "form-0", "short": true, "checked": loop }, "↻"),
+        __submit({ "short": true, "value": "∧", "title": "move up", "form": "form-0", "name": "up-" + n }),
+        __submit({ "short": true, "value": "∨", "title": "move down", "form": "form-0", "name": "down-" + n }),
+        __submit({ "short": true, "value": "X", "title": "remove rule", "form": "form-0", "name": "remove-" + n })
+      )
     )
   )
 );
@@ -594,43 +603,51 @@ switch (action) {
     }
     break;
   case "replace":
-    let copyButton;
-    let resultElement;
-    let resultString = String(params.base);
-    for (let i = 0; i < rows.length; i++) {
-      let loop = true;
-      while(loop) {
-        let rpls = rows[i].replace;
-        rpls = rpls.replace(/((?:^|[^\\])(?:\\\\)*)\\t/g, "$1\t");
-        rpls = rpls.replace(/((?:^|[^\\])(?:\\\\)*)\\v/g, "$1\v");
-        rpls = rpls.replace(/((?:^|[^\\])(?:\\\\)*)\\f/g, "$1\f");
-        rpls = rpls.replace(/((?:^|[^\\])(?:\\\\)*)\\r/g, "$1\r");
-        rpls = rpls.replace(/((?:^|[^\\])(?:\\\\)*)\\n/g, "$1\n");
-        rpls = rpls.replace(/((?:^|[^\\])(?:\\\\)*)\\0/g, "$1\0");
-        rpls = rpls.replace(/((?:^|[^\\])(?:\\\\)*)\\/g, "$1");
-        rpls = rpls.replace(/\\\\/g, "\\");
-        let resultString1 = resultString.replace(new RegExp(rows[i].find, (rows[i].registerSensitive? "": "i") + (rows[i].multiline? "m": "") + (rows[i].firstOnly? "": "g")), rpls);
-        loop = (rows[i].loop && resultString1 != resultString);
-        resultString = resultString1;
+    try{
+      let copyButton;
+      let resultElement;
+      let resultString = String(params.base);
+      for (let i = 0; i < rows.length; i++) {
+        let loop = true;
+        while(loop) {
+          let rpls = rows[i].replace;
+          rpls = rpls.replace(/((?:^|[^\\])(?:\\\\)*)\\t/g, "$1\t");
+          rpls = rpls.replace(/((?:^|[^\\])(?:\\\\)*)\\v/g, "$1\v");
+          rpls = rpls.replace(/((?:^|[^\\])(?:\\\\)*)\\f/g, "$1\f");
+          rpls = rpls.replace(/((?:^|[^\\])(?:\\\\)*)\\r/g, "$1\r");
+          rpls = rpls.replace(/((?:^|[^\\])(?:\\\\)*)\\n/g, "$1\n");
+          rpls = rpls.replace(/((?:^|[^\\])(?:\\\\)*)\\0/g, "$1\0");
+          rpls = rpls.replace(/((?:^|[^\\])(?:\\\\)*)\\/g, "$1");
+          rpls = rpls.replace(/\\\\/g, "\\");
+          let resultString1 = resultString.replace(new RegExp(rows[i].find, (rows[i].registerSensitive? "": "i") + (rows[i].multiline? "m": "") + (rows[i].firstOnly? "": "g")), rpls);
+          loop = (rows[i].loop && resultString1 != resultString);
+          resultString = resultString1;
+        }
       }
-    }
-    result = __("div", { "class": "row" },
-      used(__("pre", { "class": "row__result" }, resultString ),
-        el => resultElement = el
-      )
-    );
-    copyToClipboardButton = __("div", { "class": "row row_panel" },
-      __("div", { "class": "row__flex row__flex_menu justify-content_flex-end" },
-        used(__button({}, "copy to clipboard"),
-          el => copyButton = el
+      result = __("div", { "class": "row" },
+        used(__("pre", { "class": "row__result" }, resultString ),
+          el => resultElement = el
         )
-      )
-    );
-    copyButton.onclick = () => {
-      document.getSelection().selectAllChildren(resultElement);
-      document.execCommand("Copy");
-      document.getSelection().empty();
-    };
+      );
+      copyToClipboardButton = __("div", { "class": "row row_panel" },
+        __("div", { "class": "row__flex row__flex_menu justify-content_flex-end" },
+          used(__button({}, "copy to clipboard"),
+            el => copyButton = el
+          )
+        )
+      );
+      copyButton.onclick = () => {
+        document.getSelection().selectAllChildren(resultElement);
+        document.execCommand("Copy");
+        document.getSelection().empty();
+      };
+    } catch (error) {
+      console.error(error);
+
+      result = __("div", { "class": "row row_error" },
+        __("pre", { "class": "row__result" }, `${error.name}:\n${error.message}` ),
+      );
+    }
     break;
 }
 
