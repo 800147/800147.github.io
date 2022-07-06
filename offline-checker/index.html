@@ -5,6 +5,15 @@
         <meta chrset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <style>
+            #header {
+                background-color: white;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                margin: 0;
+                padding: 1rem 0.5rem;
+            }
             #pingButton {
                 border-radius: 50%;
                 width: 3rem;
@@ -14,6 +23,7 @@
                 bottom: 1rem;
             }
             body {
+                margin-top: 5rem;
                 margin-bottom: 5rem;
             }
         </style>
@@ -29,6 +39,7 @@
 
             const log = (message) => {
                 logs.innerHTML += `${new Date().toLocaleString()} — ${message}<br />`;
+                window.scrollTo(0, document.body.scrollHeight);
             };
 
             const noCacheHeaders = new Headers();
