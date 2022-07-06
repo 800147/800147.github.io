@@ -18,9 +18,13 @@
                 logs.innerHTML += `${new Date().toLocaleString()} — ${message}<br />`;
             };
 
+            const noCacheHeaders = new Headers();
+            noCacheHeaders.append("pragma", "no-cache");
+            noCacheHeaders.append("cache-control", "no-cache");
+
             const onPing = () => {
                 pingButton.disabled = true;
-                fetch("https://800147.github.io/offline-checker/ping.txt")
+                fetch("https://800147.github.io/offline-checker/ping.txt", { headers: noCacheHeaders })
                     .then((res) => {
                         log(`ping: ${res.status} ${res.statusText}`);
                     })
