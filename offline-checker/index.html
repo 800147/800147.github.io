@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta chrset="utf-8" />
+        <title>Offline checker</title>
+    </head>
+    <body>
+        <h1 id="header"></h1>
+        <p id="log"></p>
+        <script>
+            const handler = () => {
+                const status = window.navigator.onLine
+                    ? '<span style="color: green;">Online</span>'
+                    : '<span style="color: red;">Offline</span>';
+
+                document.querySelector("#header").innerHTML = status;
+                document.querySelector("#log").innerHTML += `${status} — ${new Date().toLocaleString()}<br />`;
+            };
+
+            window.addEventListener("online", handler);
+            window.addEventListener("offline", handler);
+
+            handler();
+        </script>
+    </body>
+</html>
