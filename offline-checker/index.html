@@ -7,15 +7,38 @@
     </head>
     <body>
         <h1 id="header"></h1>
-        <p id="log"></p>
+        <button id="pingButton" onclick="onPing();">PING</button>
+        <p id="logs"></p>
         <script>
+            const header = document.querySelector("#header");
+            const logs = document.querySelector("#logs");
+            const pingButton = document.querySelector("#pingButton");
+
+            const log = (message) => {
+                logs.innerHTML += `${new Date().toLocaleString()} — ${message}<br />`;
+            };
+
+            const onPing = () => {
+                pingButton.disabled = true;
+                fetch("https://800147.github.io/offline-checker/ping.txt")
+                    .then((res) => {
+                        log(`ping: ${res.status} ${res.statusText}`);
+                    })
+                    .catch((error) => {
+                        log(`ping error: ${error}`);
+                    })
+                    .finally(() => {
+                        pingButton.disabled = false;
+                    });
+            };
+
             const handler = () => {
                 const status = window.navigator.onLine
-                    ? '<span style="color: green;">Online</span>'
-                    : '<span style="color: red;">Offline</span>';
+                    ? '<span style="color: green;">ONLINE</span>'
+                    : '<span style="color: red;">OFFLINE</span>';
 
-                document.querySelector("#header").innerHTML = status;
-                document.querySelector("#log").innerHTML += `${new Date().toLocaleString()} — ${status}<br />`;
+                header.innerHTML = status;
+                log(status);
             };
 
             window.addEventListener("online", handler);
