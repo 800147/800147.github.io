@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta chrset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Offline checker</title>
+        <meta chrset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     </head>
     <body>
         <h1 id="header"></h1>
@@ -15,7 +15,7 @@
                     : '<span style="color: red;">Offline</span>';
 
                 document.querySelector("#header").innerHTML = status;
-                document.querySelector("#log").innerHTML += `${status} — ${new Date().toLocaleString()}<br />`;
+                document.querySelector("#log").innerHTML += `${new Date().toLocaleString()} — ${status}<br />`;
             };
 
             window.addEventListener("online", handler);
