@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>800147 on Github</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <link rel="stylesheet" href="https://800147.github.io/tools/src/Document/Document.css" />
+  </head>
+  <body class="Document-Body">
+    <main class="Document Document_page">
+<h1>Fedora</h1>
+
+<h2>Установка</h2>
+
+<h3>Загрузочная флешка</h3>
+<p>Ventoy есть под все платформы, работает со всеми установочниками</p>
+<p><a href="https://ventoy.net/en/index.html" target="_blank" rel="noreferrer">https://ventoy.net/en/index.html</a></p>
+
+<h3>UEFI</h3>
+<p>Для UEFI диск должен быть размечен методом GPT и на нём должны присутствовать два раздела:</p>
+<ul>
+<li>~100mb Fat32 с типом раздела EFI System и точкой монтирования /boot/efi</li>
+<li>>=512mb с обычной файловой системой и точкой монтирования /boot</li>
+</ul>
+
+<h2>Устройства</h2>
+
+<h3>TP-Link Archer-T2U</h3>
+<p>Подходит и для Archer-T4U</p>
+<p>Нужен DKMS</p>
+<p><a href="https://github.com/aircrack-ng/rtl8812au.git" target="_blank" rel="noreferrer">https://github.com/aircrack-ng/rtl8812au.git</a></p>
+<pre><code>git clone -b v5.6.4.2 https://github.com/aircrack-ng/rtl8812au.git
+cd rtl*</code></pre>
+<pre><code>git clone https://github.com/aircrack-ng/rtl8812au.git
+cd rtl8812au
+sudo make dkms_install</code></pre>
+<p>Отключаем лампочку:</p>
+<pre><code>sudo touch /etc/modprobe.d/8812au.conf
+sudo nano /etc/modprobe.d/8812au.conf
+options 88XXau rtw_led_ctrl=0</code></pre>
+
+<h3>Keychrone k1 v4</h3>
+<p><a href="https://github.com/adam-savard/keychron-k2-function-keys-linux" target="_blank" rel="noreferrer">https://github.com/adam-savard/keychron-k2-function-keys-linux</a></p>
+
+<h2>Настройки</h2>
+
+<h3>Вход без пароля</h3>
+<p><a href="https://www.reddit.com/r/Fedora/comments/q9t9f0/logging_in_without_entering_the_password_for_the/" target="_blank" rel="noreferrer">https://www.reddit.com/r/Fedora/comments/q9t9f0/logging_in_without_entering_the_password_for_the/</a></p>
+<ul>
+<li>В настройках пользователя выставить галку «Автоматический вход»</li>
+<li>Установить приложение «Пароли и ключи» и там сбросить пароль для связки ключей (потом на неё будет ругань при смене пароля пользователя)</li>
+</ul>
+
+<h3>VPN</h3>
+<p>Настраивается через системные настройки Сеть > VPN</p>
+<p>Через приложение nm-connection-editor можно настроить автозапуск VPN для определённых соединений</p>
+
+<h3>PEAP соединение</h3>
+<p>Если не получается подключиться к старому роутеру с PEAP защитой (постоянно просит ввести пароль), можно отключить новые настройки криптографии</p>
+<pre><code>sudo update-crypto-policies --set legacy</code></pre>
+<p><a href="https://bugzilla.redhat.com/show_bug.cgi?id=2072070" target="_blank" rel="noreferrer">https://bugzilla.redhat.com/show_bug.cgi?id=2072070</a></p>
+
+<p><a href="" target="_blank" rel="noreferrer"></a></p>
+
+<h3>RDP</h3>
+<p>Параметры > Общий доступ > Удалённый рабочий стол</p>
+<p>Надо включить и настроить доступ. Клиенту подключаться по ip адресу.</p>
+<p>Чтобы включить режим расширения экрана (дополнительный монитор), надо ввести команду:</p>
+<pre><code>gsettings set org.gnome.desktop.remote-desktop.rdp screen-share-mode extend</code></pre>
+<p><a href="https://www.omgubuntu.co.uk/2022/06/use-ipad-as-second-monitor-ubuntu-22-04" target="_blank" rel="noreferrer">https://www.omgubuntu.co.uk/2022/06/use-ipad-as-second-monitor-ubuntu-22-04</a></p>
+
+<h3>Кодеки</h3>
+<p>Нужен RPM Fusion</p>
+<p><a href="https://linux-faq.ru/page/uluchshenie-podderghki-multimediynih-formatov-v-fedora-workstation" target="_blank" rel="noreferrer">https://linux-faq.ru/page/uluchshenie-podderghki-multimediynih-formatov-v-fedora-workstation</a></p>
+<pre><code>sudo dnf install gstreamer1-libav gstreamer1-plugins-bad-free-extras gstreamer1-plugins-bad-freeworld gstreamer1-plugins-base-tools gstreamer1-plugins-good-extras gstreamer1-plugins-ugly gstreamer1-plugins-bad-free gstreamer1-plugins-good gstreamer1-plugins-base</code></pre>
+
+<h3>DKMS</h3>
+<p>Позволяет автоматически устанавливать модули ядра после его обновления. Нужен для простой установки драйверов</p>
+<pre><code>sudo dnf install dkms kernel-devel kernel-headers</code></pre>
+<p>Без kernel-devel и kernel-headers будет выходить ошибка про потерянные хедеры</p>
+
+<h3>GSConnect не подключается при старте</h3>
+<p>Создать в ~/.config/autostart/ файл «gs-connect-ring-autostart.desktop» с содержимым:</p>
+<pre><code>[Desktop Entry]
+# Add this file to ~/.config/autostart/ folder to autostart GS Connect
+Name=GS Connect ring
+Exec=bash -c "sleep 7; ~/.local/share/gnome-shell/extensions/gsconnect@andyholmes.github.io/service/daemon.js --ring"
+Type=Application
+Terminal=false
+StartupNotify=true
+NoDisplay=true</code></pre>
+
+<h2>Источники приложений</h2>
+
+<h3>RPM Fusion</h3>
+<p>Включен по умолчанию, если выставить галку "сторонние источники" при установке (<a href="https://tecadmin.net/install-ffmpeg-on-fedora/" target="_blank" rel="noreferrer">https://tecadmin.net/install-ffmpeg-on-fedora/</a>)</p>
+<pre><code>sudo dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+sudo dnf install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm</code></pre>
+
+<h3>Flathub</h3>
+<p>Flatpack установлен по умолчанию и даже flathub указан, как включённый (если выставить галку "сторонние источники" при установке), но он не работает, и надо устанавливать его по инструкции <a href="https://flatpak.org/setup/Fedora/" target="_blank" rel="noreferrer">https://flatpak.org/setup/Fedora/</a></p>
+<pre><code>flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo</code></pre>
+
+<h3>Snap</h3>
+<p><a href="https://snapcraft.io/docs/installing-snap-on-fedora" target="_blank" rel="noreferrer">https://snapcraft.io/docs/installing-snap-on-fedora</a></p>
+<pre><code>sudo dnf install snapd
+sudo ln -s /var/lib/snapd/snap /snap</code></pre>
+<p>Snap Store:</p>
+<pre><code>sudo snap install snap-store</code></pre>
+<p>Настроить отображение snap-пакетов в стандартном магазине приложений не получилось</p>
+
+<h2>Приложения</h2>
+FFmpeg
+Нужен RPM Fusion
+https://tecadmin.net/install-ffmpeg-on-fedora/
+sudo dnf install ffmpeg ffmpeg-devel
+Git
+Установлен из коробки
+Github
+https://help.github.com/en/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
+ssh-keygen -t rsa -b 4096 -C "800147@gmail.com"
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_rsa
+sudo gedit ~/.ssh/id_rsa.pub
+https://github.com/settings/keys
+git clone <ssh адрес репозитория>
+Git LFS
+sudo dnf install git-lfs
+git lfs install
+Внутри проекта:
+git-lfs pull
+Npm
+NVM
+https://github.com/nvm-sh/nvm
+wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+PostgreSQL
+https://docs.fedoraproject.org/en-US/quick-docs/postgresql/
+sudo dnf install postgresql-server postgresql-contrib
+sudo postgresql-setup --initdb --unit postgresql
+sudo nano /var/lib/pgsql/data/pg_hba.conf
+Заменяем строку — выставляем trust вместо ident
+# host all all 127.0.0.1/32 ident
+host all all 127.0.0.1/32 trust
+Перезагружаемся
+Для запуска
+sudo systemctl start postgresql
+Для автозапуска
+sudo systemctl enable postgresql
+Docker
+https://docs.docker.com/engine/install/fedora/
+Если уже устанавливался другими методами, то надо удалить старые версии https://docs.docker.com/engine/install/fedora/#uninstall-old-versions
+sudo dnf -y install dnf-plugins-core
+sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+sudo dnf install docker-ce docker-ce-cli containerd.io
+sudo systemctl start docker
+https://stackoverflow.com/questions/48957195/how-to-fix-docker-got-permission-denied-issue
+https://stackoverflow.com/questions/34471074/cannot-connect-to-the-docker-daemon-is-the-docker-daemon-running-on-this-host
+Через Snap
+sudo snap install docker --edge
+sudo groupadd --system docker
+sudo gpasswd -a ${USER} docker
+newgrp docker
+sudo snap disable docker
+sudo snap enable docker
+Docker-compose
+sudo dnf install docker-compose
+
+
+    </main>
+  </body>
+</html>
