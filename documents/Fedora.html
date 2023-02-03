@@ -90,18 +90,18 @@ Terminal=false
 StartupNotify=true
 NoDisplay=true</code></pre>
 
-<h2>Источники приложений</h2>
+<h3>Источники приложений</h3>
 
-<h3>RPM Fusion</h3>
+<h4>RPM Fusion</h4>
 <p>Включен по умолчанию, если выставить галку "сторонние источники" при установке (<a href="https://tecadmin.net/install-ffmpeg-on-fedora/" target="_blank" rel="noreferrer">https://tecadmin.net/install-ffmpeg-on-fedora/</a>)</p>
 <pre><code>sudo dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
 sudo dnf install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm</code></pre>
 
-<h3>Flathub</h3>
+<h4>Flathub</h4>
 <p>Flatpack установлен по умолчанию и даже flathub указан, как включённый (если выставить галку "сторонние источники" при установке), но он не работает, и надо устанавливать его по инструкции <a href="https://flatpak.org/setup/Fedora/" target="_blank" rel="noreferrer">https://flatpak.org/setup/Fedora/</a></p>
 <pre><code>flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo</code></pre>
 
-<h3>Snap</h3>
+<h4>Snap</h4>
 <p><a href="https://snapcraft.io/docs/installing-snap-on-fedora" target="_blank" rel="noreferrer">https://snapcraft.io/docs/installing-snap-on-fedora</a></p>
 <pre><code>sudo dnf install snapd
 sudo ln -s /var/lib/snapd/snap /snap</code></pre>
@@ -110,62 +110,70 @@ sudo ln -s /var/lib/snapd/snap /snap</code></pre>
 <p>Настроить отображение snap-пакетов в стандартном магазине приложений не получилось</p>
 
 <h2>Приложения</h2>
-FFmpeg
-Нужен RPM Fusion
-https://tecadmin.net/install-ffmpeg-on-fedora/
-sudo dnf install ffmpeg ffmpeg-devel
-Git
-Установлен из коробки
-Github
-https://help.github.com/en/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
-ssh-keygen -t rsa -b 4096 -C "800147@gmail.com"
+
+<h3>FFmpeg</h3>
+<p>Нужен RPM Fusion</p>
+<p><a href="https://tecadmin.net/install-ffmpeg-on-fedora/" target="_blank" rel="noreferrer">https://tecadmin.net/install-ffmpeg-on-fedora/</a></p>
+<pre><code>sudo dnf install ffmpeg ffmpeg-devel</code></pre>
+
+<h3>Git</h3>
+<p>Установлен из коробки</p>
+
+<h4>Github</h4>
+<p><a href="https://help.github.com/en/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent" target="_blank" rel="noreferrer">https://help.github.com/en/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent</a></p>
+<pre><code>ssh-keygen -t rsa -b 4096 -C "800147@gmail.com"
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_rsa
-sudo gedit ~/.ssh/id_rsa.pub
-https://github.com/settings/keys
-git clone <ssh адрес репозитория>
-Git LFS
-sudo dnf install git-lfs
-git lfs install
-Внутри проекта:
-git-lfs pull
-Npm
-NVM
-https://github.com/nvm-sh/nvm
-wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-PostgreSQL
-https://docs.fedoraproject.org/en-US/quick-docs/postgresql/
-sudo dnf install postgresql-server postgresql-contrib
+sudo gedit ~/.ssh/id_rsa.pub</code></pre>
+<p><a href="https://github.com/settings/keys" target="_blank" rel="noreferrer">https://github.com/settings/keys</a></p>
+<pre><code>git clone &lt;ssh адрес репозитория></code></pre>
+
+<h4>Git LFS</h4>
+<pre><code>sudo dnf install git-lfs
+git lfs install</code></pre>
+<p>Внутри проекта:</p>
+<pre><code>git-lfs pull</code></pre>
+
+<h3>Npm</h3>
+
+<h4>NVM</h4>
+<p><a href="https://github.com/nvm-sh/nvm" target="_blank" rel="noreferrer">https://github.com/nvm-sh/nvm</a></p>
+<pre><code>wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash</code></pre>
+
+<h3>PostgreSQL</h3>
+<p><a href="https://docs.fedoraproject.org/en-US/quick-docs/postgresql/" target="_blank" rel="noreferrer">https://docs.fedoraproject.org/en-US/quick-docs/postgresql/</a></p>
+<pre><code>sudo dnf install postgresql-server postgresql-contrib
 sudo postgresql-setup --initdb --unit postgresql
-sudo nano /var/lib/pgsql/data/pg_hba.conf
-Заменяем строку — выставляем trust вместо ident
-# host all all 127.0.0.1/32 ident
-host all all 127.0.0.1/32 trust
-Перезагружаемся
-Для запуска
-sudo systemctl start postgresql
-Для автозапуска
-sudo systemctl enable postgresql
-Docker
-https://docs.docker.com/engine/install/fedora/
-Если уже устанавливался другими методами, то надо удалить старые версии https://docs.docker.com/engine/install/fedora/#uninstall-old-versions
-sudo dnf -y install dnf-plugins-core
+sudo nano /var/lib/pgsql/data/pg_hba.conf</code></pre>
+<p>Заменяем строку — выставляем trust вместо ident</p>
+<pre><code># host all all 127.0.0.1/32 ident
+host all all 127.0.0.1/32 trust</code></pre>
+<p>Перезагружаемся</p>
+<p>Для запуска</p>
+<pre><code>sudo systemctl start postgresql</code></pre>
+<p>Для автозапуска</p>
+<pre><code>sudo systemctl enable postgresql</code></pre>
+
+<h3>Docker</h3>
+<p><a href="https://docs.docker.com/engine/install/fedora/" target="_blank" rel="noreferrer">https://docs.docker.com/engine/install/fedora/</a></p>
+<p>Если уже устанавливался другими методами, то надо удалить старые версии <a href="https://docs.docker.com/engine/install/fedora/#uninstall-old-versions" target="_blank" rel="noreferrer">https://docs.docker.com/engine/install/fedora/#uninstall-old-versions</a></p>
+<pre><code>sudo dnf -y install dnf-plugins-core
 sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
 sudo dnf install docker-ce docker-ce-cli containerd.io
-sudo systemctl start docker
-https://stackoverflow.com/questions/48957195/how-to-fix-docker-got-permission-denied-issue
-https://stackoverflow.com/questions/34471074/cannot-connect-to-the-docker-daemon-is-the-docker-daemon-running-on-this-host
-Через Snap
-sudo snap install docker --edge
+sudo systemctl start docker</code></pre>
+<p><a href="https://stackoverflow.com/questions/48957195/how-to-fix-docker-got-permission-denied-issue" target="_blank" rel="noreferrer">https://stackoverflow.com/questions/48957195/how-to-fix-docker-got-permission-denied-issue</a></p>
+<p><a href="https://stackoverflow.com/questions/34471074/cannot-connect-to-the-docker-daemon-is-the-docker-daemon-running-on-this-host" target="_blank" rel="noreferrer">https://stackoverflow.com/questions/34471074/cannot-connect-to-the-docker-daemon-is-the-docker-daemon-running-on-this-host</a></p>
+
+<h4>Через Snap</h4>
+<pre><code>sudo snap install docker --edge
 sudo groupadd --system docker
 sudo gpasswd -a ${USER} docker
 newgrp docker
 sudo snap disable docker
-sudo snap enable docker
-Docker-compose
-sudo dnf install docker-compose
+sudo snap enable docker</code></pre>
 
-
+<h4>Docker-compose</h4>
+<pre><code>sudo dnf install docker-compose</code></pre>
     </main>
   </body>
 </html>
