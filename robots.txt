@@ -1,4 +1,2 @@
 User-agent: *
-Crawl-delay: 1
-Host: https://800147.github.io
-Disallow: /kostya-adventures/
+Allow: /
