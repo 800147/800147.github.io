@@ -1,5 +1,4 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<!--	created with www.mysitemapgenerator.com	-->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url><loc>https://800147.github.io/</loc><priority>1.0</priority></url>
 <url><loc>https://800147.github.io/boolat-kamalov/web-developer/</loc><priority>0.6</priority></url>
@@ -29,4 +28,5 @@
 <url><loc>https://800147.github.io/tools/el/</loc><priority>0.6</priority></url>
 <url><loc>https://800147.github.io/tools/getUrlParams/</loc><priority>0.6</priority></url>
 <url><loc>https://800147.github.io/tools/ModController/</loc><priority>0.6</priority></url>
+<!--	created with www.mysitemapgenerator.com	-->
 </urlset>
